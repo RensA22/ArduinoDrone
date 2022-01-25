@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+.cproject
+
+# Build files
+.pio/
+.settings/
+.project
