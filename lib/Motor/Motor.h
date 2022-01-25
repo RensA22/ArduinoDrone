@@ -12,7 +12,7 @@
 
 class Motor {
 public:
-	Motor(const char _motorPin);
+	Motor(const int _motorPin);
 	virtual ~Motor() = default;
 
 	Motor() = delete;
@@ -20,11 +20,12 @@ public:
 	Motor& operator=(Motor &&other) = delete;
 
 	void writeMotorValue(const char value);
+	char getCurrentValue() const;
 
 private:
-    const char motorPin;
-    char currentValue;
-    Servo ESC;
+	const char motorPin;
+	char currentValue;
+	Servo ESC;
 };
 
 #endif /* LIB_MOTOR_MOTOR_H_ */
