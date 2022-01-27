@@ -9,7 +9,10 @@
 #include <Arduino.h>
 
 FlightController::FlightController(const int _motorpins[4]) :
-		currentState(state::idle), nMotors(4), mpu(new GY521(0x68)) {
+		currentState(state::idle), nMotors(4), mpu(new MPU6050), altitudePID(
+				new PID(30, 0.65, 0.3, 0.5, 0, 10)), rollPID(
+				new PID(0, 1.3, 0.04, 18.0, -50, 50)), distSens(
+				new HCSR04(2, 0)) {
 	for (int i = 0; i < nMotors; i++) {
 		motors[i] = new Motor(_motorpins[i]);
 	}
@@ -17,28 +20,13 @@ FlightController::FlightController(const int _motorpins[4]) :
 }
 
 void FlightController::setup() {
-	Wire.begin();
-	delay(100);
-	while (mpu->wakeup() == false) {
-		Serial.print(millis());
-		Serial.println("\tCould not connect to GY521");
-		delay(1000);
-	}
-	mpu->setAccelSensitivity(0);  // 8g
-	mpu->setGyroSensitivity(0);   // 500 degrees/s
-
-	mpu->setThrottle();
-
-	// set calibration values from calibration sketch.
-	mpu->axe = 0;
-	mpu->aye = 0;
-	mpu->aze = 0;
-	mpu->gxe = 0;
-	mpu->gye = 0;
-	mpu->gze = 0;
+	mpu->setup();
 }
 
 void FlightController::run() {
+	mpu->update();
+	short dist = distSens->measureDistance();
+	float out = 0;
 
 	switch (currentState) {
 	case idle:
@@ -53,6 +41,14 @@ void FlightController::run() {
 	case hover:
 		hoverDrone();
 		break;
+	case pid_test:
+		out = altitudePID->compute(dist);
+		setMotorsValue(out);
+		Serial.print(" ,dist: ");
+		Serial.print(dist);
+		Serial.print(" ,pid: ");
+		Serial.println(out);
+		break;
 	default:
 		Serial.println("ERROR: State not recognized");
 		return;
@@ -60,33 +56,38 @@ void FlightController::run() {
 	}
 }
 
+void FlightController::setMaxValue(int value) {
+	altitudePID->setMaxValue(value);
+}
+
 void FlightController::hoverDrone() {
 	float targetRPM = 80;
-	mpu->read();
 
 	float angleX = mpu->getAngleX();
 
-	int motorLinks = round(targetRPM - (targetRPM * (angleX / 100)));
-	int motorRechts = round(targetRPM + (targetRPM * (angleX / 100)));
+//	int motorLinks = round(targetRPM - (targetRPM * (angleX / 100)));
+//	int motorRechts = round(targetRPM + (targetRPM * (angleX / 100)));
 
-	setMotorValue(0, motorLinks);
-	setMotorValue(1, motorRechts);
-	setMotorValue(2, motorRechts);
-	setMotorValue(3, motorLinks);
+	float out = rollPID->compute(angleX);
+//	Serial.print(" pid: ");
+//	Serial.println(out);
+//
+//	setMotorValue(0, motorLinks);
+//	setMotorValue(1, motorRechts);
+//	setMotorValue(2, motorRechts);
+//	setMotorValue(3, motorLinks);
 
 	Serial.print("Angle: ");
 	Serial.print(angleX);
-	Serial.print(" ,L: ");
-	Serial.print(motorLinks);
-	Serial.print(" ,R: ");
-	Serial.println(motorRechts);
+	Serial.print(" ,out: ");
+	Serial.println(out);
 
 }
 
 void FlightController::startMotors() {
 	setMotorsValue(motors[0]->getCurrentValue() + 1);
 
-	if (motors[0]->getCurrentValue() == 180) {
+	if (motors[0]->getCurrentValue() == motors[0]->getMaxValue()) {
 		this->currentState = state::idle;
 	}
 }

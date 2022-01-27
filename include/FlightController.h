@@ -9,11 +9,12 @@
 #define INCLUDE_FLIGHTCONTROLLER_H_
 
 #include "Motor.h"
-//#include "MPU6050.h"
-#include "GY521.h"
+#include "MPU6050.h"
+#include "PID.h"
+#include "HCSR04.h"
 
 enum state {
-	idle, start, stop, hover
+	idle, start, stop, hover, pid_test
 };
 
 class FlightController {
@@ -27,11 +28,15 @@ public:
 	void setup();
 	void run();
 	void setCurrentState(state currentState);
+	void setMaxValue(int val);
 
 private:
 	state currentState;
 	const char nMotors;
-	GY521 *mpu;
+	MPU6050 *mpu;
+	PID *altitudePID;
+	PID *rollPID;
+	HCSR04 *distSens;
 
 	/* 0: Links onder
 	 * 1: Rechts onder
