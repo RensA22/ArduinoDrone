@@ -21,9 +21,12 @@ public:
 
 	void writeMotorValue(const char value);
 	char getCurrentValue() const;
+	const char getMaxValue() const;
 
 private:
 	const char motorPin;
+	const char minValue;
+	const char maxValue;
 	char currentValue;
 	Servo ESC;
 };
