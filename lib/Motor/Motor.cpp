@@ -8,26 +8,30 @@
 #include "Motor.h"
 
 Motor::Motor(const int _motorPin) :
-		motorPin(_motorPin), minValue(0), maxValue(180), currentValue(0) {
-	ESC.attach(motorPin, 1000, 2000);
-	ESC.write(currentValue);
+		motorPin(_motorPin), minValue(1000), maxValue(1300), currentValue(0) {
+	ESC.attach(motorPin);
+	ESC.writeMicroseconds(minValue);
 }
 
-void Motor::writeMotorValue(const char value) {
-	char actualVal = value;
+void Motor::writeMotorValue(const uint16_t value) {
+	uint16_t actualVal = value;
 	if (actualVal < minValue) {
 		actualVal = minValue;
 	} else if (actualVal > maxValue) {
 		actualVal = maxValue;
 	}
 	currentValue = actualVal;
-	ESC.write(actualVal);
+	ESC.writeMicroseconds(actualVal);
 }
 
-char Motor::getCurrentValue() const {
+uint16_t Motor::getCurrentValue() const {
 	return currentValue;
 }
 
-const char Motor::getMaxValue() const {
+const uint16_t Motor::getMaxValue() const {
 	return maxValue;
+}
+
+const uint16_t Motor::getMinValue() const {
+	return minValue;
 }

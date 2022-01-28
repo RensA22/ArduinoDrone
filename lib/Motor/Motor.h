@@ -19,15 +19,16 @@ public:
 	Motor(const Motor &other) = delete;
 	Motor& operator=(Motor &&other) = delete;
 
-	void writeMotorValue(const char value);
-	char getCurrentValue() const;
-	const char getMaxValue() const;
+	void writeMotorValue(const uint16_t value);
+	uint16_t getCurrentValue() const;
+	const uint16_t getMaxValue() const;
+	const uint16_t getMinValue() const;
 
 private:
 	const char motorPin;
-	const char minValue;
-	const char maxValue;
-	char currentValue;
+	const uint16_t minValue;
+	const uint16_t maxValue;
+	uint16_t currentValue;
 	Servo ESC;
 };
 
