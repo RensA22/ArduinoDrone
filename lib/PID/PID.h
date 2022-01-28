@@ -24,10 +24,14 @@ public:
 private:
 	float output;
 	float desiredValue;
+	float proportional;
 	float integral;
 	float derivative;
 	float error;
 	float prevError;
+	float elapsedTime;
+	double time;
+	double prevTime;
 
 	float Kp;
 	float Ki;
