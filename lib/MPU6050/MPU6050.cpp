@@ -19,8 +19,8 @@ void MPU6050::setup() {
 		Serial.println("\tCould not connect to GY521");
 		delay(1000);
 	}
-	gy521->setAccelSensitivity(0);  // 8g
-	gy521->setGyroSensitivity(0);   // 500 degrees/s
+	gy521->setAccelSensitivity(1);  // 8g
+	gy521->setGyroSensitivity(1);   // 500 degrees/s
 
 	gy521->setThrottle();
 
