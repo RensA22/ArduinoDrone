@@ -27,12 +27,14 @@ public:
 
 	void setup();
 	void run();
+	void setMotorsValue(const uint16_t value);
 	void setCurrentState(state currentState);
 	void setMaxValue(int val);
 
 private:
 	state currentState;
 	const char nMotors;
+	int16_t throttle;
 	MPU6050 *mpu;
 	PID *altitudePID;
 	PID *rollPID;
@@ -48,8 +50,7 @@ private:
 	void startMotors();
 	void stopMotors();
 	void hoverDrone();
-	void setMotorsValue(const char value);
-	void setMotorValue(const unsigned char motorId, const char value);
+	void setMotorValue(const unsigned char motorId, const uint16_t value);
 
 };
 
