@@ -9,18 +9,34 @@
 #define SRC_SERIALPARSER_H_
 
 #include <stdint.h>
-#include <Arduino.h>
 
 class SerialParser {
 public:
-	SerialParser() = default;
 	virtual ~SerialParser() = default;
-	SerialParser(const SerialParser &other) = delete;
-	SerialParser(SerialParser &&other) = delete;
 
-	void parseText(String incomingMessage);
+	static SerialParser& getSerialParser();
+
+	SerialParser(const SerialParser &other) = delete;
+	SerialParser(SerialParser&&) = delete;
+	const SerialParser& operator=(const SerialParser &other) = delete;
+	SerialParser& operator=(SerialParser&&) = delete;
+
+	void handleIncomingMessage(char incomingMessage);
+
+	String getMessage();
+	bool isMessageReady() const;
+
 private:
+	SerialParser() = default;
+
+	void clearBuffer();
+
+	uint8_t bufferIndex = 0;
+	static const uint8_t bufferSize = 10;
+	char buffer[bufferSize] = { };
+
+	bool messageReady = false;
+	bool bufferFull = false;
 
 };
-
 #endif /* SRC_SERIALPARSER_H_ */
