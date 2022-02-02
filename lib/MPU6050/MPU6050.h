@@ -13,7 +13,7 @@
 class MPU6050 {
 public:
 	MPU6050();
-	virtual ~MPU6050() = default;
+	virtual ~MPU6050();
 	MPU6050(const MPU6050 &other) = delete;
 	MPU6050(MPU6050 &&other) = delete;
 

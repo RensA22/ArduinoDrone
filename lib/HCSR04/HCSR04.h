@@ -10,20 +10,20 @@
 
 class HCSR04 {
 public:
-	HCSR04(const char _trigPin, const char _echoPin);
+	HCSR04(const uint8_t _trigPin, const uint8_t _echoPin);
 	virtual ~HCSR04() = default;
 
 	HCSR04() = delete;
 	HCSR04(const HCSR04 &other) = delete;
 	HCSR04& operator=(const HCSR04 &other) = delete;
 
-	short measureDistance();
+	int16_t measureDistance();
 
 private:
-    const char trigPin;
-    const char echoPin;
-    long duration;
-    short distance;
+	const uint8_t trigPin;
+	const uint8_t echoPin;
+	int32_t duration;
+	int16_t distance;
 };
 
 #endif /* LIB_HCSR04_HCSR04_H_ */

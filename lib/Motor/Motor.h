@@ -12,7 +12,8 @@
 
 class Motor {
 public:
-	Motor(const int _motorPin);
+	Motor(const uint8_t _motorPin, const uint16_t _minValue,
+			const uint16_t _maxValue);
 	virtual ~Motor() = default;
 
 	Motor() = delete;
@@ -25,7 +26,7 @@ public:
 	const uint16_t getMinValue() const;
 
 private:
-	const char motorPin;
+	const uint8_t motorPin;
 	const uint16_t minValue;
 	const uint16_t maxValue;
 	uint16_t currentValue;

@@ -11,6 +11,10 @@ MPU6050::MPU6050() :
 		gy521(new GY521(0x68)), angleX(0) {
 }
 
+MPU6050::~MPU6050() {
+	delete gy521;
+}
+
 void MPU6050::setup() {
 	Wire.begin();
 	delay(100);

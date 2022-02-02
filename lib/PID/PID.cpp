@@ -9,7 +9,7 @@
 #include "PID.h"
 
 PID::PID(const float _desiredValue, const float _Kp, const float _Ki,
-		const float _Kd, const short _minValue, const short _maxValue) :
+		const float _Kd, const int16_t _minValue, const int16_t _maxValue) :
 		output(0), desiredValue(_desiredValue), proportional(0), integral(0), derivative(
 				0), error(0), prevError(0), elapsedTime(0), time(millis()), prevTime(
 				0), Kp(_Kp), Ki(_Ki), Kd(_Kd), minValue(_minValue), maxValue(
@@ -65,6 +65,6 @@ float PID::compute(const float actualValue) {
 	return output;
 }
 
-void PID::setMaxValue(char maxValue) {
+void PID::setMaxValue(int8_t maxValue) {
 	this->maxValue = maxValue;
 }

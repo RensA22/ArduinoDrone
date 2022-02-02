@@ -7,8 +7,10 @@
 
 #include "Motor.h"
 
-Motor::Motor(const int _motorPin) :
-		motorPin(_motorPin), minValue(1000), maxValue(1300), currentValue(0) {
+Motor::Motor(const uint8_t _motorPin, const uint16_t _minValue,
+		const uint16_t _maxValue) :
+		motorPin(_motorPin), minValue(_minValue), maxValue(_maxValue), currentValue(
+				_minValue) {
 	ESC.attach(motorPin);
 	ESC.writeMicroseconds(minValue);
 }

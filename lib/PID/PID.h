@@ -11,7 +11,7 @@
 class PID {
 public:
 	PID(const float _desiredValue, const float _Kp, const float _Ki,
-			const float _Kd, const short _minValue, const short _maxValue);
+			const float _Kd, const int16_t _minValue, const int16_t _maxValue);
 	virtual ~PID() = default;
 
 	PID() = delete;
@@ -19,7 +19,7 @@ public:
 	PID(PID &&other) = delete;
 
 	float compute(const float actualValue);
-	void setMaxValue(char maxValue);
+	void setMaxValue(int8_t maxValue);
 
 private:
 	float output;
@@ -36,8 +36,8 @@ private:
 	float Kp;
 	float Ki;
 	float Kd;
-	short minValue;
-	short maxValue;
+	int16_t minValue;
+	int16_t maxValue;
 
 };
 
