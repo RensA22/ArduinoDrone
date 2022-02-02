@@ -12,45 +12,34 @@
 #include "MPU6050.h"
 #include "PID.h"
 #include "HCSR04.h"
+#include "states/AbstractState.h"
+#include "Context.h"
 
 enum state {
-	idle, start, stop, hover, pid_test
+	IDLE, START, STOP, HOVER
 };
 
-class FlightController {
+class FlightController: public Context {
 public:
-	FlightController(const int _motorPins[4]);
+	FlightController();
 	virtual ~FlightController() = default;
-	FlightController() = delete;
 	FlightController(const FlightController &other) = delete;
 	FlightController(FlightController &&other) = delete;
 
 	void setup();
 	void run();
-	void setMotorsValue(const uint16_t value);
-	void setCurrentState(state currentState);
+//	void setCurrentState(AbstractState *newState);
 	void setMaxValue(int val);
 
 private:
-	state currentState;
-	const char nMotors;
-	int16_t throttle;
+//	AbstractState *currentState;
 	MPU6050 *mpu;
 	PID *altitudePID;
 	PID *rollPID;
 	HCSR04 *distSens;
 
-	/* 0: Links onder
-	 * 1: Rechts onder
-	 * 2: Rechts boven
-	 * 3: Links boven
-	 */
-	Motor *motors[4];
-
-	void startMotors();
-	void stopMotors();
 	void hoverDrone();
-	void setMotorValue(const unsigned char motorId, const uint16_t value);
+	void handleSerialMessage();
 
 };
 
