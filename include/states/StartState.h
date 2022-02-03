@@ -19,7 +19,9 @@ public:
 	StartState(StartState &&other) = delete;
 	StartState& operator=(const StartState &other) = delete;
 
+	void entryActivity();
 	void doActivity();
+	void exitActivity();
 };
 
 #endif /* INCLUDE_STATES_STARTSTATE_H_ */

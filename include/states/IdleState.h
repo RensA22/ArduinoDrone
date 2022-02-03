@@ -18,7 +18,9 @@ public:
 	IdleState(IdleState &&other) = delete;
 	IdleState& operator=(const IdleState &other) = delete;
 
+	void entryActivity();
 	void doActivity();
+	void exitActivity();
 };
 
 #endif /* INCLUDE_STATES_IDLESTATE_H_ */

@@ -16,7 +16,10 @@ public:
 	}
 	;
 	virtual ~AbstractState() = default;
+	virtual void entryActivity() = 0;
 	virtual void doActivity() =0;
+	virtual void exitActivity() = 0;
+
 protected:
 	Context *myContext;
 };

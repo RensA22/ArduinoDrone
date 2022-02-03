@@ -19,7 +19,9 @@ public:
 	StopState(StopState &&other) = delete;
 	StopState& operator=(const StopState &other) = delete;
 
+	void entryActivity();
 	void doActivity();
+	void exitActivity();
 };
 
 #endif /* INCLUDE_STATES_STOPSTATE_H_ */

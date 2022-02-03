@@ -6,14 +6,26 @@
  */
 
 #include <states/IdleState.h>
-#include <Arduino.h>
-
-#include "MotorController.h"
+#include <states/StartState.h>
+#include "SerialParser.h"
 
 IdleState::IdleState(Context *_context) :
 		AbstractState(_context) {
-	Serial.println("Enterd Idle state");
+}
+
+void IdleState::entryActivity() {
+	Serial.println("Entry Idle state");
 }
 
 void IdleState::doActivity() {
+	if (SerialParser::getSerialParser().isMessageReady()) {
+		String message = SerialParser::getSerialParser().getMessage();
+
+		if (message == "start") {
+			myContext->setCurrentState(new StartState(myContext));
+		}
+	}
+}
+
+void IdleState::exitActivity() {
 }

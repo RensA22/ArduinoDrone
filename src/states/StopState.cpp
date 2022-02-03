@@ -15,7 +15,14 @@ StopState::StopState(Context *_context) :
 
 }
 
+void StopState::entryActivity() {
+	Serial.println("Entry Stop state");
+}
+
 void StopState::doActivity() {
 	MotorController::getMotorControllerInstance().stopMotors();
 	myContext->setCurrentState(new IdleState(myContext));
+}
+
+void StopState::exitActivity() {
 }
