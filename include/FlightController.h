@@ -12,12 +12,7 @@
 #include "MPU6050.h"
 #include "PID.h"
 #include "HCSR04.h"
-#include "states/AbstractState.h"
 #include "Context.h"
-
-enum state {
-	IDLE, START, STOP, HOVER
-};
 
 class FlightController: public Context {
 public:
@@ -28,18 +23,11 @@ public:
 
 	void setup();
 	void run();
-//	void setCurrentState(AbstractState *newState);
-	void setMaxValue(int val);
 
 private:
-//	AbstractState *currentState;
-	MPU6050 *mpu;
 	PID *altitudePID;
 	PID *rollPID;
 	HCSR04 *distSens;
-
-	void hoverDrone();
-	void handleSerialMessage();
 
 };
 

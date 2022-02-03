@@ -14,89 +14,18 @@
 #include "SerialParser.h"
 
 FlightController::FlightController() :
-		Context(), mpu(new MPU6050), altitudePID(
-				new PID(30, 0.65, 0.3, 0.5, 0, 10)), rollPID(
+		Context(), altitudePID(new PID(30, 0.65, 0.3, 0.5, 0, 10)), rollPID(
 				new PID(0, 0.05, 0.005, 0.02, -1000, 50)), distSens(
 				new HCSR04(2, 0)) {
 }
 
 void FlightController::setup() {
-	setCurrentState(new IdleState(this));
-	mpu->setup();
+	this->setCurrentState(new IdleState(this));
+	MPU6050::getMPU6050Instance().setup();
 }
 
 void FlightController::run() {
-	mpu->update();
-	handleSerialMessage();
+	MPU6050::getMPU6050Instance().update();
 
 	currentState->doActivity();
-
-////	short dist = distSens->measureDistance();
-////	float out = 0;
-//
-//	handleSerialMessage();
-//
-//	switch (currentState) {
-//	case IDLE:
-//		break;
-//	case START:
-//		startMotors();
-//		break;
-//	case STOP:
-//		stopMotors();
-//		this->currentState = state::IDLE;
-//		break;
-//	case HOVER:
-//		hoverDrone();
-//		break;
-//	default:
-//		Serial.println("ERROR: State not recognized");
-//		return;
-//		break;
-//	}
-}
-
-void FlightController::setMaxValue(int value) {
-	altitudePID->setMaxValue(value);
-}
-
-void FlightController::hoverDrone() {
-//	float angleX = round(mpu->getAngleX());
-//	float out = rollPID->compute(angleX);
-//
-//	int motorLinks = round(throttle - out);
-//	int motorRechts = round(throttle + out);
-//
-////	Serial.print(" pid: ");
-////	Serial.println(out);
-////
-//	setMotorValue(0, motorLinks);
-//	setMotorValue(1, motorRechts);
-//	setMotorValue(2, motorRechts);
-//	setMotorValue(3, motorLinks);
-//
-//	Serial.print("Angle: ");
-//	Serial.print(angleX);
-//	Serial.print(" ,MotorLinks: ");
-//	Serial.print(motorLinks);
-//	Serial.print(" ,motorRechts: ");
-//	Serial.println(motorRechts);
-
-}
-
-void FlightController::handleSerialMessage() {
-	if (SerialParser::getSerialParser().isMessageReady()) {
-		String message = SerialParser::getSerialParser().getMessage();
-
-		if (message == "start") {
-			setCurrentState(new StartState(this));
-		} else if (message == "stop") {
-			setCurrentState(new StopState(this));
-		}
-//		else if (message == "hover") {
-//			setCurrentState(state::HOVER);
-//		} else if (message == "idle") {
-//			setCurrentState(state::IDLE);
-//		}
-	}
 }
