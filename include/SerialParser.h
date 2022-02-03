@@ -9,6 +9,7 @@
 #define SRC_SERIALPARSER_H_
 
 #include <stdint.h>
+#include <Arduino.h>
 
 class SerialParser {
 public:
