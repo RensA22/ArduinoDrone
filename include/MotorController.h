@@ -21,6 +21,11 @@ public:
 
 	bool startMotors();
 	void stopMotors();
+	void setMotorsValue(const uint16_t value);
+	void setMotorValue(const uint8_t motorId, const uint16_t value);
+
+	void increaseMotorsValue(const uint16_t increase);
+	void increaseMotorValue(const uint8_t motorId, const uint16_t increase);
 
 private:
 	MotorController();
@@ -37,11 +42,6 @@ private:
 	uint16_t throttle[4];
 	Motor *motors[4];
 
-	void setMotorsValue(const uint16_t value);
-	void setMotorValue(const uint8_t motorId, const uint16_t value);
-
-	void increaseMotorsValue(const uint16_t increase);
-	void increaseMotorValue(const uint8_t motorId, const uint16_t increase);
 };
 
 #endif /* INCLUDE_MOTORCONTROLLER_H_ */
