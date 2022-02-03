@@ -20,9 +20,10 @@ Context::~Context() {
 }
 
 void Context::setCurrentState(AbstractState *newState) {
+	this->currentState->exitActivity();
 	if (this->currentState != nullptr) {
 		delete this->currentState;
 	}
-
 	this->currentState = newState;
+	this->currentState->entryActivity();
 }
