@@ -15,6 +15,12 @@ MPU6050::~MPU6050() {
 	delete gy521;
 }
 
+MPU6050& MPU6050::getMPU6050Instance() {
+	static MPU6050 instance;
+
+	return instance;
+}
+
 void MPU6050::setup() {
 	Wire.begin();
 	delay(100);

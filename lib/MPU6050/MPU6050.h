@@ -12,7 +12,8 @@
 
 class MPU6050 {
 public:
-	MPU6050();
+	static MPU6050& getMPU6050Instance();
+
 	virtual ~MPU6050();
 	MPU6050(const MPU6050 &other) = delete;
 	MPU6050(MPU6050 &&other) = delete;
@@ -22,6 +23,8 @@ public:
 	float getAngleX() const;
 
 private:
+	MPU6050();
+
 	GY521 *gy521;
 	float angleX;
 };
