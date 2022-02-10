@@ -12,7 +12,7 @@
 
 class Context {
 public:
-	Context();
+	Context(String _name);
 	virtual ~Context();
 	Context(const Context &other) = delete;
 	Context(Context &&other) = delete;
@@ -24,6 +24,8 @@ public:
 
 protected:
 	AbstractState *currentState;
+	String name;
+
 };
 
 #endif /* INCLUDE_CONTEXT_H_ */

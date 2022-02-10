@@ -8,10 +8,6 @@
 #ifndef INCLUDE_FLIGHTCONTROLLER_H_
 #define INCLUDE_FLIGHTCONTROLLER_H_
 
-#include "Motor.h"
-#include "MPU6050.h"
-#include "PID.h"
-#include "HCSR04.h"
 #include "Context.h"
 
 class FlightController: public Context {
@@ -23,11 +19,6 @@ public:
 
 	void setup();
 	void run();
-
-private:
-	PID *altitudePID;
-	PID *rollPID;
-	HCSR04 *distSens;
 
 };
 
