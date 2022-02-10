@@ -8,7 +8,7 @@
 #ifndef LIB_MPU6050_H_
 #define LIB_MPU6050_H_
 
-#include <GY521.h>
+#include <Wire.h>
 
 class MPU6050 {
 public:
@@ -20,13 +20,35 @@ public:
 
 	void setup();
 	void update();
+	void reset();
+
 	float getAngleX() const;
+	float getAngleY() const;
+	float getAngleZ() const;
 
 private:
 	MPU6050();
 
-	GY521 *gy521;
+	bool begin();
+	bool wakeUp();
+	bool isConnected();
+
+	void setRegister(uint8_t reg, uint8_t value);
+	uint8_t getRegister(uint8_t reg);
+
+	TwoWire *wire;
+	uint8_t address;
+	uint32_t prevMicros;
+	float updateHz;
+
+	int16_t offX;
+	int16_t offY;
+	int16_t offZ;
+
 	float angleX;
+	float angleY;
+	float angleZ;
+
 };
 
 #endif /* LIB_MPU6050_H_ */
