@@ -13,11 +13,13 @@
 #include "SerialParser.h"
 
 StartState::StartState(Context *_context) :
-		AbstractState(_context) {
+		AbstractState(_context, "Start") {
 }
 
 void StartState::entryActivity() {
-	Serial.println("Entry Start state");
+	// give myself time to hold the drone steady
+	Serial.println("5 sec");
+	delay(5000);
 }
 
 void StartState::doActivity() {
@@ -26,6 +28,7 @@ void StartState::doActivity() {
 
 		if (message == "stop") {
 			myContext->setCurrentState(new StopState(myContext));
+			SerialParser::getSerialParser().clearBuffer();
 		}
 	} else if (MotorController::getMotorControllerInstance().startMotors()) {
 		myContext->setCurrentState(new FlyingState(myContext));

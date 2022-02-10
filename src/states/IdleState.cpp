@@ -8,13 +8,14 @@
 #include <states/IdleState.h>
 #include <states/StartState.h>
 #include "SerialParser.h"
+#include "MPU6050.h"
 
 IdleState::IdleState(Context *_context) :
-		AbstractState(_context) {
+		AbstractState(_context, "Idle") {
 }
 
 void IdleState::entryActivity() {
-	Serial.println("Entry Idle state");
+	MPU6050::getMPU6050Instance().reset();
 }
 
 void IdleState::doActivity() {
@@ -23,6 +24,7 @@ void IdleState::doActivity() {
 
 		if (message == "start") {
 			myContext->setCurrentState(new StartState(myContext));
+			SerialParser::getSerialParser().clearBuffer();
 		}
 	}
 }

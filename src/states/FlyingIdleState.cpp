@@ -12,11 +12,11 @@
 #include "SerialParser.h"
 
 FlyingIdleState::FlyingIdleState(Context *_context) :
-		AbstractState(_context) {
+		AbstractState(_context, "Flying idle") {
 }
 
 void FlyingIdleState::entryActivity() {
-	Serial.println("Entry flying idle");
+
 }
 
 void FlyingIdleState::doActivity() {
@@ -25,6 +25,7 @@ void FlyingIdleState::doActivity() {
 
 		if (message == "hover") {
 			myContext->setCurrentState(new HoverState(myContext));
+			SerialParser::getSerialParser().clearBuffer();
 		}
 	}
 }

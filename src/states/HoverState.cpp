@@ -7,25 +7,39 @@
 
 #include <states/HoverState.h>
 #include <states/StopState.h>
+#include <states/FlyingState.h>
 
 #include "MPU6050.h"
 #include "MotorController.h"
+#include "SerialParser.h"
 
 HoverState::HoverState(Context *_context) :
-		AbstractState(_context) {
+		AbstractState(_context, "Hover"), rollPID(
+				new PID(0, 0.05, 0.005, 0.02, -1000, 1000)), pitchPID(
+				new PID(0, 0.05, 0.005, 0.02, -1000, 1000)) {
+}
+
+HoverState::~HoverState() {
+	delete rollPID;
+	delete pitchPID;
 }
 
 void HoverState::entryActivity() {
-	Serial.println("Entry flying Hover");
+	// give myself time to hold the drone steady
+	Serial.println("5 sec");
+	delay(5000);
 }
 
 void HoverState::doActivity() {
 
-	float angleX = round(MPU6050::getMPU6050Instance().getAngleX());
-//	float out = rollPID->compute(angleX);
-	float out = 0;
+	float angleX = MPU6050::getMPU6050Instance().getAngleX();
+//	if (angleX >= -3 && angleX <= 3) {
+//		angleX = 0;
+//	}
 
-	uint16_t throttle = 1500;
+	float out = rollPID->compute(angleX);
+
+	uint16_t throttle = 1300;
 
 	int16_t motorLinks = round(throttle - out);
 	int16_t motorRechts = round(throttle + out);
@@ -37,6 +51,8 @@ void HoverState::doActivity() {
 
 	Serial.print("Angle: ");
 	Serial.print(angleX);
+	Serial.print(" ,PID: ");
+	Serial.print(out);
 	Serial.print(" ,MotorLinks: ");
 	Serial.print(motorLinks);
 	Serial.print(" ,motorRechts: ");

@@ -10,18 +10,18 @@
 #include "MotorController.h"
 
 StopState::StopState(Context *_context) :
-		AbstractState(_context) {
-	Serial.println("Enterd Stop state");
+		AbstractState(_context, "Stop") {
 
 }
 
 void StopState::entryActivity() {
-	Serial.println("Entry Stop state");
+
 }
 
 void StopState::doActivity() {
 	MotorController::getMotorControllerInstance().stopMotors();
 	myContext->setCurrentState(new IdleState(myContext));
+	Serial.println("STop DO");
 }
 
 void StopState::exitActivity() {

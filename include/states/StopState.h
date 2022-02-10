@@ -8,7 +8,7 @@
 #ifndef INCLUDE_STATES_STOPSTATE_H_
 #define INCLUDE_STATES_STOPSTATE_H_
 
-#include "AbstractState.h"
+#include <states/AbstractState.h>
 #include "Context.h"
 
 class StopState: public AbstractState {

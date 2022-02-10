@@ -8,13 +8,13 @@
 #ifndef INCLUDE_FLYINGSTATE_H_
 #define INCLUDE_FLYINGSTATE_H_
 
+#include "states/AbstractState.h"
 #include "Context.h"
-#include <states/AbstractState.h>
 
-class FlyingState: public AbstractState {
+class FlyingState: public AbstractState, public Context {
 public:
 	FlyingState(Context *_context);
-	virtual ~FlyingState() = default;
+	virtual ~FlyingState();
 	FlyingState(const FlyingState &other) = delete;
 	FlyingState(FlyingState &&other) = delete;
 	FlyingState& operator=(const FlyingState &other) = delete;
@@ -22,7 +22,8 @@ public:
 	void entryActivity();
 	void doActivity();
 	void exitActivity();
-//	void run();
+	void run();
+
 };
 
 #endif /* INCLUDE_FLYINGSTATE_H_ */
