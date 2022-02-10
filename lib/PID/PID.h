@@ -21,6 +21,8 @@ public:
 	float compute(const float actualValue);
 	void setMaxValue(int8_t maxValue);
 
+	void reset();
+
 private:
 	float output;
 	float desiredValue;

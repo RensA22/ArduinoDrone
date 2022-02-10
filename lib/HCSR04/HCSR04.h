@@ -22,8 +22,9 @@ public:
 private:
 	const uint8_t trigPin;
 	const uint8_t echoPin;
-	int32_t duration;
+	float duration;
 	int16_t distance;
+	uint8_t distOffst;
 };
 
 #endif /* LIB_HCSR04_HCSR04_H_ */

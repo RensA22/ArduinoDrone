@@ -7,9 +7,11 @@
 
 #include <Arduino.h>
 #include "HCSR04.h"
+#include "Wire.h"
 
 HCSR04::HCSR04(const uint8_t _trigPin, const uint8_t _echoPin) :
-		trigPin(_trigPin), echoPin(_echoPin), duration(0), distance(0) {
+		trigPin(_trigPin), echoPin(_echoPin), duration(0), distance(0), distOffst(
+				15) {
 	pinMode(trigPin, OUTPUT);
 	pinMode(echoPin, INPUT);
 }
@@ -28,6 +30,7 @@ int16_t HCSR04::measureDistance() {
 
 	// Calculating the distance in cm
 	distance = duration * 0.034 / 2;
+	distance -= (float) distOffst;
 
 	return distance;
 }

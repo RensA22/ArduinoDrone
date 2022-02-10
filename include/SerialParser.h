@@ -25,12 +25,11 @@ public:
 	void handleIncomingMessage(char incomingMessage);
 
 	String getMessage();
+	void clearBuffer();
 	bool isMessageReady() const;
 
 private:
 	SerialParser() = default;
-
-	void clearBuffer();
 
 	uint8_t bufferIndex = 0;
 	static const uint8_t bufferSize = 10;

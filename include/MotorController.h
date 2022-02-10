@@ -19,6 +19,7 @@ public:
 	MotorController(MotorController &&other) = delete;
 	MotorController& operator=(const MotorController &other) = delete;
 
+	void initMotors();
 	bool startMotors();
 	void stopMotors();
 	void setMotorsValue(const uint16_t value);

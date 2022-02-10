@@ -8,16 +8,18 @@
 #include <Arduino.h>
 #include "FlightController.h"
 #include "SerialParser.h"
+#include "MotorController.h"
+#include "MPU6050.h"
 
 uint64_t prevTime = 0;
 
 FlightController fc;
 
 void setup() {
-	Serial.begin(115200); // Starts the serial communication
-	pinMode(2, INPUT);
-	fc.setup();
+	Serial.begin(115200); // Starts the serial communications
 
+	fc.setup();
+	pinMode(2, INPUT);
 }
 
 void loop() {
@@ -26,15 +28,16 @@ void loop() {
 //	prevTime = millis();
 
 // Emergency stop
-	if (digitalRead(2) == 1 && false) {
-		Serial.println("STOPPPPPP");
-//		fc.setCurrentState(state::STOP);
+	if (digitalRead(2) == 1) {
+		MotorController::getMotorControllerInstance().stopMotors();
+		Serial.println("STOP!");
+		delay(1000);
 	} else {
-		fc.run();
 		if (Serial.available() > 0) {
 			SerialParser::getSerialParser().handleIncomingMessage(
 					Serial.read());
 		}
+		fc.run();
 	}
 }
 

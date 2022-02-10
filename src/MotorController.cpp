@@ -8,8 +8,10 @@
 #include <MotorController.h>
 
 MotorController::MotorController() :
-		nMotors(4), minValue(1000), maxValue(2000), throttleStartTarget(1150) {
+		nMotors(4), minValue(1000), maxValue(1600), throttleStartTarget(1150) {
+}
 
+void MotorController::initMotors() {
 	const uint8_t _motorpins[4] = { 14, 12, 13, 15 };
 
 	for (int i = 0; i < nMotors; i++) {
