@@ -34,57 +34,57 @@ void TakeoffState::entryActivity() {
 void TakeoffState::doActivity() {
 	MPU6050::getMPU6050Instance().update();
 
-	if (SerialParser::getSerialParser().isMessageReady()) {
-		String message = SerialParser::getSerialParser().getMessage();
-
-		if (message == "reset") {
-			MPU6050::getMPU6050Instance().reset();
-			rollPID->reset();
-			pitchPID->reset();
-
-		} else if (message.toInt() != 0) {
-			throttle = message.toInt();
-
-			Serial.print("Received: ");
-			Serial.println(throttle);
-		}
-
-		SerialParser::getSerialParser().clearBuffer();
-
-	}
-
-	float angleX = MPU6050::getMPU6050Instance().getAngleX();
-	float angleY = MPU6050::getMPU6050Instance().getAngleY();
-
-	float outRoll = rollPID->compute(angleX);
-	float outPitch = pitchPID->compute(angleY);
-
-	throttleMotors[0] = round(throttle - outPitch + outRoll);
-	throttleMotors[1] = round(throttle - outPitch - outRoll);
-	throttleMotors[2] = round(throttle + outPitch - outRoll);
-	throttleMotors[3] = round(throttle + outPitch + outRoll);
-
-	for (int i = 0; i < 4; i++) {
-		MotorController::getMotorControllerInstance().setMotorValue(i,
-				throttleMotors[i]);
-	}
-
-	Serial.print("AngleX: ");
-	Serial.print(angleX);
-	Serial.print(" ,PID roll: ");
-	Serial.print(outRoll);
-	Serial.print("		AngleY: ");
-	Serial.print(angleY);
-	Serial.print(" ,PID pitch: ");
-	Serial.print(outPitch);
-	Serial.print(" 		Motor0: ");
-	Serial.print(throttleMotors[0]);
-	Serial.print(" ,Motor1: ");
-	Serial.print(throttleMotors[1]);
-	Serial.print(" ,motor2: ");
-	Serial.print(throttleMotors[2]);
-	Serial.print(" ,Motor3: ");
-	Serial.println(throttleMotors[3]);
+//	if (SerialParser::getSerialParser().isMessageReady()) {
+//		String message = SerialParser::getSerialParser().getMessage();
+//
+//		if (message == "reset") {
+//			MPU6050::getMPU6050Instance().reset();
+//			rollPID->reset();
+//			pitchPID->reset();
+//
+//		} else if (message.toInt() != 0) {
+//			throttle = message.toInt();
+//
+//			Serial.print("Received: ");
+//			Serial.println(throttle);
+//		}
+//
+//		SerialParser::getSerialParser().clearBuffer();
+//
+//	}
+//
+//	float angleX = MPU6050::getMPU6050Instance().getAngleX();
+//	float angleY = MPU6050::getMPU6050Instance().getAngleY();
+//
+//	float outRoll = rollPID->compute(angleX);
+//	float outPitch = pitchPID->compute(angleY);
+//
+//	throttleMotors[0] = round(throttle - outPitch + outRoll);
+//	throttleMotors[1] = round(throttle - outPitch - outRoll);
+//	throttleMotors[2] = round(throttle + outPitch - outRoll);
+//	throttleMotors[3] = round(throttle + outPitch + outRoll);
+//
+////	for (int i = 0; i < 4; i++) {
+////		MotorController::getMotorControllerInstance().setMotorValue(i,
+////				throttleMotors[i]);
+////	}
+//
+//	Serial.print("AngleX: ");
+//	Serial.print(angleX);
+//	Serial.print(" ,PID roll: ");
+//	Serial.println(outRoll);
+//	Serial.print("		AngleY: ");
+//	Serial.print(angleY);
+//	Serial.print(" ,PID pitch: ");
+//	Serial.print(outPitch);
+//	Serial.print(" 		Motor0: ");
+//	Serial.print(throttleMotors[0]);
+//	Serial.print(" ,Motor1: ");
+//	Serial.print(throttleMotors[1]);
+//	Serial.print(" ,motor2: ");
+//	Serial.print(throttleMotors[2]);
+//	Serial.print(" ,Motor3: ");
+//	Serial.println(throttleMotors[3]);
 
 }
 
