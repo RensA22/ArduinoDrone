@@ -41,9 +41,13 @@ private:
 	uint32_t prevMicros;
 	float updateHz;
 
-	int16_t offX;
-	int16_t offY;
-	int16_t offZ;
+	int16_t offXgyro;
+	int16_t offYgyro;
+	int16_t offZgyro;
+
+	int16_t offXacc;
+	int16_t offYacc;
+	int16_t offZacc;
 
 	float angleX;
 	float angleY;
