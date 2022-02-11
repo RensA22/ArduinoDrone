@@ -39,8 +39,8 @@ void TakeoffState::doActivity() {
 
 		if (message == "reset") {
 			MPU6050::getMPU6050Instance().reset();
-			pitchPID->reset();
 			rollPID->reset();
+			pitchPID->reset();
 
 		} else if (message.toInt() != 0) {
 			throttle = message.toInt();
@@ -51,9 +51,6 @@ void TakeoffState::doActivity() {
 
 		SerialParser::getSerialParser().clearBuffer();
 
-	} else {
-//		Serial.println("No Serial");
-//		delay(500);
 	}
 
 	float angleX = MPU6050::getMPU6050Instance().getAngleX();
