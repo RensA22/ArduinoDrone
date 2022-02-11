@@ -53,6 +53,8 @@ private:
 	float angleY;
 	float angleZ;
 
+	bool first_run;
+
 };
 
 #endif /* LIB_MPU6050_H_ */

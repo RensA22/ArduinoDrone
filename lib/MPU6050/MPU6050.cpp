@@ -12,7 +12,7 @@
 MPU6050::MPU6050() :
 		wire(&Wire), address(0x68), prevMicros(micros()), updateHz(0), offXgyro(
 				0), offYgyro(0), offZgyro(0), offXacc(0), offYacc(0), offZacc(
-				0), angleX(0.0), angleY(0.0), angleZ(0.0) {
+				0), angleX(0.0), angleY(0.0), angleZ(0.0), first_run(true) {
 	setup();
 }
 
@@ -30,16 +30,22 @@ void MPU6050::setup() {
 		Serial.println("Could not connect to GY521");
 	}
 
-	//setGyroSensitivity
+	//setGyroSensitivity 65.5
 	setRegister(0x1b, 0b00000000);
-	//setAccelSensitivity
+	//setAccelSensitivity 8192
 	setRegister(0x1c, 0b00000000);
+
+	setRegister(0x1a, 0b00000011);
+
+	setRegister(0x19, 0b00000100);
 
 	offXgyro = -378;
 	offYgyro = 11;
 	offZgyro = 103;
 
-	offXacc = -162;
+	offXacc = -126;
+	offYacc = 360;
+	offZacc = 17257;
 }
 
 void MPU6050::update() {
@@ -54,34 +60,56 @@ void MPU6050::update() {
 	rawYgyro += offYgyro;
 	rawZgyro += offZgyro;
 
-	int16_t rawXAcc = getRegister(0x3b) << 8 | getRegister(0x3c);
-	int16_t rawYAcc = getRegister(0x3d) << 8 | getRegister(0x3e);
-	int16_t rawZAcc = getRegister(0x3f) << 8 | getRegister(0x40);
-
-	rawXAcc += offXacc;
-	rawYAcc += offYacc;
-	rawZAcc += offZacc;
-
-	float xAcc = rawXAcc / 16384.0;
-	float yAcc = rawYAcc / 16384.0;
-	float zAcc = rawZAcc / 16384.0;
-
-	float x2 = xAcc * xAcc;
-	float y2 = yAcc * yAcc;
-	float z2 = zAcc * zAcc;
-
-	float rollAccel = atan2(zAcc, yAcc) * (180 / PI) - 90;
-
-//	float angX = atan(rawYAcc / sqrt(xAcc2 + yAcc2)) * (180.0 / PI);
-
-	Serial.println(rollAccel);
-
-//Calculate the raw data to degrees per sec
+	//Calculate the raw data to degrees per sec
 	angleX += rawXgyro * (1.0 / 131.0) * updateHz;
 	angleY += rawYgyro * (1.0 / 131.0) * updateHz;
 	angleZ += rawZgyro * (1.0 / 131.0) * updateHz;
 
-	//Calcule the looptime in seconds. Micros are used to up the accuracy.
+	//Get the raw accelero value from the mpu6050 registers
+	int16_t rawXAcc = getRegister(0x3b) << 8 | getRegister(0x3c);
+	int16_t rawYAcc = getRegister(0x3d) << 8 | getRegister(0x3e);
+	int16_t rawZAcc = getRegister(0x3f) << 8 | getRegister(0x40);
+
+	//add offsets to it
+	rawXAcc += offXacc;
+	rawYAcc += offYacc;
+	rawZAcc += offZacc;
+
+	//caculate the G's from the raw data
+	float xAcc = rawXAcc / 16384.0;
+	float yAcc = rawYAcc / 16384.0;
+	float zAcc = rawZAcc / 16384.0;
+
+	//convert the g's to a angle WIP
+	float accelRoll = atan2(zAcc, yAcc) * (180 / PI) + 90.0;
+	float accelPitch = atan2(zAcc, xAcc) * (180 / PI) + 90.0;
+
+	if (first_run) {
+		angleX = accelRoll;
+		first_run = false;
+	}
+
+	float accelSum = abs(rawXAcc) + abs(rawYAcc) + abs(rawZAcc);
+	float gyroSum = abs(rawXgyro) + abs(rawYgyro) + abs(rawZgyro);
+
+	if (abs(angleX - accelRoll) > 5) {
+		angleX = accelRoll;
+	}
+	if (abs(angleY - accelPitch) > 5) {
+		angleY = accelPitch;
+	}
+
+	if (accelSum > 0.1 && accelSum < 3 && gyroSum > 0.3) { //Check that th movement is not very high (therefore providing inacurate angles)
+		angleX = angleX * 0.98 + 0.02 * accelRoll;
+	} else if (gyroSum > 0.3) { //Use the gyroscope angle if the acceleration is high
+
+	} else if (gyroSum <= 0.3) { //Use accelerometer angle if not much movement
+		angleX = accelRoll;
+	}
+
+	Serial.println(accelRoll);
+
+//Calcule the looptime in seconds. Micros are used to up the accuracy.
 	updateHz = (float) (micros() - prevMicros) / 1e6;
 	prevMicros = micros();
 }
