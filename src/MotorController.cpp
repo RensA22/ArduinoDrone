@@ -8,7 +8,7 @@
 #include <MotorController.h>
 
 MotorController::MotorController() :
-		nMotors(4), minValue(1000), maxValue(1600), throttleStartTarget(1150) {
+		nMotors(4), minValue(1000), maxValue(1850), throttleStartTarget(1150) {
 }
 
 void MotorController::initMotors() {

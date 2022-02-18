@@ -23,6 +23,7 @@ public:
 	void entryActivity();
 	void doActivity();
 	void exitActivity();
+
 private:
 	PID *rollPID;
 	PID *pitchPID;

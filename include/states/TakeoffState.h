@@ -23,7 +23,7 @@ public:
 	void entryActivity();
 	void doActivity();
 	void exitActivity();
-
+	float calculateSetPoint(float angle, float throttle);
 private:
 	HCSR04 *distSens;
 	PID *altitudePID;
@@ -32,6 +32,9 @@ private:
 
 	uint16_t throttle;
 	uint16_t throttleMotors[4];
+
+	float roll;
+	float pitch;
 };
 
 #endif /* INCLUDE_STATES_TAKEOFFSTATE_H_ */

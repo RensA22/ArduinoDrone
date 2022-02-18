@@ -25,9 +25,9 @@ float PID::compute(const float actualValue) {
 
 	proportional = Kp * error;
 
-	if (error < 5 || error > -5) {
-		integral = integral + (Ki * error);
-	}
+//	if (error < 5 || error > -5) {
+	integral += Ki * error;
+//	}
 
 	derivative = Kd * ((error - prevError) / elapsedTime);
 
@@ -49,6 +49,7 @@ void PID::reset() {
 	integral = 0;
 	derivative = 0;
 	error = 0;
+	output = 0;
 	prevError = 0;
 }
 
