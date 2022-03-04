@@ -11,9 +11,9 @@
 #include <Wire.h>
 
 struct sensor {
-	int16_t offsetX;
-	int16_t offsetY;
-	int16_t offsetZ;
+	float offsetX;
+	float offsetY;
+	float offsetZ;
 
 	float angleX;
 	float angleY;
@@ -96,7 +96,6 @@ private:
 	float pitchMotion;
 
 	bool first_run;
-
 };
 
 #endif /* LIB_MPU6050_H_ */

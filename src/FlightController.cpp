@@ -12,14 +12,14 @@
 #include "MPU6050.h"
 #include "MotorController.h"
 
-#include "states/TakeoffState.h"
+//#include "states/TakeoffState.h"
 
 FlightController::FlightController() :
 		Context("FlightController") {
 }
 
 void FlightController::setup() {
-	setCurrentState(new TakeoffState(this));
+	setCurrentState(new IdleState(this));
 
 //	MotorController::getMotorControllerInstance().initMotors();
 }

@@ -11,7 +11,7 @@
 
 MPU6050::MPU6050() :
 		wire(&Wire), address(0x68), prevMicros(micros()), updateHz(0), gyro( {
-				.sensitivity = 65.5 }), accel( { .sensitivity = 8192 }), roll(
+				.sensitivity = 65.5 }), accel( { .sensitivity = 4096 }), roll(
 				0.0), pitch(0.0), yaw(0.0), rollMotion(0.0), pitchMotion(0.0), first_run(
 				true) {
 
@@ -32,13 +32,16 @@ void MPU6050::setup() {
 		delay(500);
 	}
 
+	//configure power management
+	setRegister(0x6B, 0b000000000);
+
 	//low pass filter
 	setRegister(0x1a, 0b000000101);
 
 	//setGyroSensitivity 65.5
 	setRegister(0x1b, 0b00001000);
 	//setAccelSensitivity 8192
-	setRegister(0x1c, 0b00001000);
+	setRegister(0x1c, 0b00010000);
 
 //	setRegister(0x1a, 0b00000011);
 //
@@ -48,11 +51,13 @@ void MPU6050::setup() {
 }
 
 void MPU6050::calculateOffset() {
+	Serial.println("Calculating offset");
+
 	uint32_t nLoops = 2000;
-	Serial.println("Calculate offset?");
-	int64_t offX = 0;
-	int64_t offY = 0;
-	int64_t offZ = 0;
+	double offX = 0;
+	double offY = 0;
+	double offZ = 0;
+
 	for (uint32_t i = 0; i < nLoops; i++) {
 		int16_t rawXgyro = getRegister(0x43) << 8 | getRegister(0x44);
 		int16_t rawYgyro = getRegister(0x45) << 8 | getRegister(0x46);
@@ -64,54 +69,48 @@ void MPU6050::calculateOffset() {
 		yield();
 	}
 
-	gyro.offsetX = round(offX / nLoops) * -1;
-	gyro.offsetY = round(offY / nLoops) * -1;
-	gyro.offsetZ = round(offZ / nLoops) * -1;
+	gyro.offsetX = offX / nLoops;
+	gyro.offsetY = offY / nLoops;
+	gyro.offsetZ = offZ / nLoops;
 
-	Serial.print("XgyroOffset: ");
-	Serial.print(gyro.offsetX);
-	Serial.print(", YgyroOffset: ");
-	Serial.print(gyro.offsetY);
-	Serial.print(", ZgyroOffset: ");
-	Serial.println(gyro.offsetZ);
+	offX = 0;
+	offY = 0;
+	offZ = 0;
 
+	for (uint32_t i = 0; i < nLoops; i++) {
+		int16_t rawXAcc = getRegister(0x3b) << 8 | getRegister(0x3c);
+		int16_t rawYAcc = getRegister(0x3d) << 8 | getRegister(0x3e);
+		int16_t rawZAcc = getRegister(0x3f) << 8 | getRegister(0x40);
+
+		uint64_t total_acc = sqrt(
+				pow(rawXAcc, 2) + pow(rawYAcc, 2) + pow(rawZAcc, 2));
+
+		if (abs(rawXAcc) < total_acc) {
+			offX += asin((float) rawYAcc / total_acc) * (180 / PI);
+		}
+
+		if (abs(rawYAcc) < total_acc) {
+			offY += asin((float) rawXAcc / total_acc) * (180 / PI);
+		}
+
+		yield();
+	}
+
+	accel.offsetX = offX / nLoops;
+	accel.offsetY = offY / nLoops;
+
+	Serial.println("Calculating offset done!");
 }
 
 void MPU6050::update() {
 	updateGyroData();
 	updateAccData();
 
-//	Serial.print("BeforeAngleX:\t");
-//	Serial.print(gyro.angleX);
+	roll = (0.9 * gyro.angleX) + (0.1 * accel.angleX);
 
-//	if (!first_run) {
-//	gyro.angleX = (0.9996 * gyro.angleX) + (0.0004 * accel.angleX);
-//	gyro.angleY = (0.9996 * gyro.angleY) + (0.0004 * accel.angleY);
-//	} else {
-//		gyro.angleX = accel.angleX;
-//		gyro.angleY = accel.angleY;
-//
-//		first_run = false;
-//	}
+	pitch = (0.9 * gyro.angleY) + (0.1 * accel.angleY);
 
-	roll = roll * 0.9 + gyro.angleX * 0.1;
-	pitch = pitch * 0.9 + gyro.angleY * 0.1;
-
-	rollMotion = rollMotion * 0.7 + 0.3 * gyro.rawX / gyro.sensitivity;
-	pitchMotion = pitchMotion * 0.7 + 0.3 * gyro.rawY / gyro.sensitivity;
-
-//	Serial.print("\tAngleX:\t");
-//	Serial.print(gyro.angleX);
-//	Serial.print("\tangleY:\t");
-//	Serial.print(gyro.angleY);
-//	Serial.print("\taccX:\t");
-//	Serial.print(accel.angleX);
-//	Serial.print("\taccY:\t");
-//	Serial.print(accel.angleY);
-//	Serial.print("\troll:\t");
-//	Serial.print(roll);
-//	Serial.print("\tpitch:\t");
-//	Serial.println(pitch);
+	yaw = -gyro.rawZ / gyro.sensitivity;
 
 }
 
@@ -122,43 +121,39 @@ void MPU6050::updateGyroData() {
 	gyro.rawZ = getRegister(0x47) << 8 | getRegister(0x48);
 
 	//add offsets to it;
-	gyro.rawX += round(gyro.offsetX);
-	gyro.rawY += round(gyro.offsetY);
-	gyro.rawZ += round(gyro.offsetZ);
+	gyro.rawX -= round(gyro.offsetX);
+	gyro.rawY -= round(gyro.offsetY);
+	gyro.rawZ -= round(gyro.offsetZ);
+
+//	Serial.print("GyroRawX:\t");
+//	Serial.print(gyro.rawX);
+//	Serial.print("\tGyroRawY:\t");
+//	Serial.print(gyro.rawY);
+//	Serial.print("\tGyroRawZ:\t");
+//	Serial.print(gyro.rawZ);
+
 	float angX = 0.0;
 	float angY = 0.0;
 	if (updateHz < 2) {
 
 		//Calculate the raw data to degrees per sec
-		angX = (float) -gyro.rawX / gyro.sensitivity * updateHz;
+		angX = (float) gyro.rawX / gyro.sensitivity * updateHz;
 		angY = (float) gyro.rawY / gyro.sensitivity * updateHz;
 
 		if (angX > 0.01 || angX < -0.01) {
 			gyro.angleX += angX;
 		}
+//		Serial.print("\tGyroAngleX:\t");
+//		Serial.print(gyro.angleX);
+//		Serial.print("\t");
+//		Serial.println((float) millis() / 1000, 4);
+
 		if (angY > 0.01 || angY < -0.01) {
 			gyro.angleY += angY;
 		}
+//		Serial.print("\tGyroAngleY:\t");
+//		Serial.println(gyro.angleY);
 	}
-
-//	gyro.angleZ += zGryo / gyro.sensitivity * updateHz;
-//
-//	Serial.print("RawGyroY"
-//			":\t");
-//	Serial.print(gyro.rawY);
-//	Serial.print("\tRawGyroY:\t");
-//	Serial.print(gyro.rawY);
-//	Serial.print("\tSens:\t");
-//	Serial.print(gyro.sensitivity, 5);
-//	Serial.print("\tupdateHz:\t");
-//	Serial.print(updateHz, 5);
-//	Serial.print("\tOutput:\t");
-//	Serial.print(angX, 5);
-//	Serial.print("\tangleY:\t");
-//	Serial.print(gyro.angleY, 5);
-//	if (angY > 0.01 || angY < -0.01) {
-//		Serial.print("********");
-//	}
 
 //Calcule the looptime in seconds. Micros are used to up the accuracy.
 	updateHz = (float) (micros() - prevMicros) / 1e6;
@@ -167,36 +162,35 @@ void MPU6050::updateGyroData() {
 
 void MPU6050::updateAccData() {
 //Get the raw accelero value from the mpu6050 registers
-	int16_t rawXAcc = getRegister(0x3b) << 8 | getRegister(0x3c);
-	int16_t rawYAcc = getRegister(0x3d) << 8 | getRegister(0x3e);
-	int16_t rawZAcc = getRegister(0x3f) << 8 | getRegister(0x40);
+	accel.rawX = getRegister(0x3b) << 8 | getRegister(0x3c);
+	accel.rawY = getRegister(0x3d) << 8 | getRegister(0x3e);
+	accel.rawZ = getRegister(0x3f) << 8 | getRegister(0x40);
+
+//	Serial.print("AccelRawX:\t");
+//	Serial.print(accel.rawX);
+//	Serial.print("\tAccelRawY:\t");
+//	Serial.print(accel.rawY);
+//	Serial.print("\tAccelRawZ:\t");
+//	Serial.print(accel.rawZ);
 
 	uint64_t total_acc = sqrt(
-			pow(rawXAcc, 2) + pow(rawYAcc, 2) + pow(rawZAcc, 2));
+			pow(accel.rawX, 2) + pow(accel.rawY, 2) + pow(accel.rawZ, 2));
 
-	if (abs(rawXAcc) < total_acc) {
-		accel.angleX = asin((float) rawYAcc / total_acc) * (180 / PI) * -1;
+	if (abs(accel.rawX) < total_acc) {
+		accel.angleX = (asin((float) accel.rawY / total_acc) * (180 / PI))
+				- accel.offsetX;
+//		Serial.print("\tAccelAngleX:\t");
+//		Serial.print(accel.angleX);
 	}
 
-	if (abs(rawYAcc) < total_acc) {
-		accel.angleY = asin((float) rawXAcc / total_acc) * (180 / PI) * -1;
+	if (abs(accel.rawY) < total_acc) {
+		accel.angleY = (asin((float) accel.rawX / total_acc) * (180 / PI))
+				- accel.offsetY;
+//		Serial.print("\tAccelAngleY:\t");
+//		Serial.print(accel.angleY);
 	}
+//	Serial.println();
 
-//add offsets to it
-//	float xAcc = rawXAcc + accel.offsetX;
-//	float yAcc = rawYAcc + accel.offsetY;
-//	float zAcc = rawZAcc + accel.offsetZ;
-
-//caculate the G's from the raw data
-//	float xAcc = rawXAcc / accel.sensitivity;
-//	float yAcc = rawYAcc / accel.sensitivity;
-//	float zAcc = rawZAcc / accel.sensitivity;
-//
-//	accel.angleX = (atan(yAcc / ((xAcc * xAcc) + (zAcc * zAcc))) * (180 / PI));
-//	accel.angleY = atan(xAcc / ((yAcc * yAcc) + (zAcc * zAcc))) * (180 / PI);
-
-//	accel.angleX = 180 / PI * (atan2(-yAcc, -zAcc) + PI) - 180;
-//	accel.angleY = 180 / PI * (atan2(-xAcc, -zAcc) + PI) - 180;
 }
 
 bool MPU6050::begin() {

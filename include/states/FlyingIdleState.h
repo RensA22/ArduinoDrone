@@ -13,7 +13,7 @@
 class FlyingIdleState: public AbstractState {
 public:
 	FlyingIdleState(Context *_context);
-	virtual ~FlyingIdleState() = default;
+	virtual ~FlyingIdleState();
 	FlyingIdleState(const FlyingIdleState &other) = delete;
 	FlyingIdleState(FlyingIdleState &&other) = delete;
 	FlyingIdleState& operator=(const FlyingIdleState &other) = delete;

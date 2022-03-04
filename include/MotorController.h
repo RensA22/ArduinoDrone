@@ -34,6 +34,7 @@ private:
 	const uint8_t nMotors;
 	const uint16_t minValue;
 	const uint16_t maxValue;
+
 	uint16_t throttleStartTarget;
 	/* 0: Links onder
 	 * 1: Rechts onder

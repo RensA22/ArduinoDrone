@@ -22,6 +22,10 @@ public:
 	void setMaxValue(int8_t maxValue);
 
 	void reset();
+	float getDerivative() const;
+	float getError() const;
+	float getIntegral() const;
+	float getProportional() const;
 
 private:
 	float output;

@@ -17,9 +17,7 @@ StartState::StartState(Context *_context) :
 }
 
 void StartState::entryActivity() {
-	// give myself time to hold the drone steady
-	Serial.println("5 sec");
-	delay(5000);
+
 }
 
 void StartState::doActivity() {

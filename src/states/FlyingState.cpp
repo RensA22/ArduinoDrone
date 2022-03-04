@@ -19,12 +19,10 @@ FlyingState::FlyingState(Context *_context) :
 }
 
 FlyingState::~FlyingState() {
-	delete this->currentState;
 }
 
 void FlyingState::entryActivity() {
-	MPU6050::getMPU6050Instance().setup();
-	this->setCurrentState(new FlyingIdleState(this));
+	setCurrentState(new FlyingIdleState(this));
 }
 
 void FlyingState::doActivity() {
@@ -34,8 +32,9 @@ void FlyingState::doActivity() {
 		String message = SerialParser::getSerialParser().getMessage();
 
 		if (message == "stop") {
-			myContext->setCurrentState(new StopState(myContext));
 			SerialParser::getSerialParser().clearBuffer();
+			myContext->setCurrentState(new StopState(myContext));
+			return;
 		}
 	}
 
@@ -43,13 +42,15 @@ void FlyingState::doActivity() {
 }
 
 void FlyingState::exitActivity() {
-	if (this->currentState != nullptr) {
-		this->currentState->exitActivity();
+	if (currentState != nullptr) {
+		currentState->exitActivity();
+		delete currentState;
 	}
 }
 
 void FlyingState::run() {
-
-	this->currentState->doActivity();
+	if (currentState != nullptr) {
+		currentState->doActivity();
+	}
 }
 

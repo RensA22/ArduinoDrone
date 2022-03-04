@@ -17,7 +17,6 @@ PID::PID(const float _desiredValue, const float _Kp, const float _Ki,
 }
 
 float PID::compute(const float actualValue) {
-	prevTime = time;
 	time = millis();
 	elapsedTime = (time - prevTime) / 1000;
 
@@ -40,6 +39,7 @@ float PID::compute(const float actualValue) {
 		output = 1000;
 	}
 	prevError = error;
+	prevTime = time;
 
 	return output;
 }
@@ -55,4 +55,20 @@ void PID::reset() {
 
 void PID::setMaxValue(int8_t maxValue) {
 	this->maxValue = maxValue;
+}
+
+float PID::getDerivative() const {
+	return derivative;
+}
+
+float PID::getError() const {
+	return error;
+}
+
+float PID::getIntegral() const {
+	return integral;
+}
+
+float PID::getProportional() const {
+	return proportional;
 }

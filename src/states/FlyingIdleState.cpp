@@ -15,6 +15,10 @@ FlyingIdleState::FlyingIdleState(Context *_context) :
 		AbstractState(_context, "Flying idle") {
 }
 
+FlyingIdleState::~FlyingIdleState() {
+	Serial.println("~FlyingIdleState");
+}
+
 void FlyingIdleState::entryActivity() {
 
 }

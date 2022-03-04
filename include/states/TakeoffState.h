@@ -31,6 +31,7 @@ private:
 	PID *rollPID;
 
 	uint16_t throttle;
+	uint16_t targetThrottle;
 	uint16_t throttleMotors[4];
 
 	float roll;

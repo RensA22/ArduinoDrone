@@ -8,11 +8,11 @@
 #include <MotorController.h>
 
 MotorController::MotorController() :
-		nMotors(4), minValue(1000), maxValue(1850), throttleStartTarget(1150) {
+		nMotors(4), minValue(1000), maxValue(1700), throttleStartTarget(1150) {
 }
 
 void MotorController::initMotors() {
-	const uint8_t _motorpins[4] = { 14, 12, 13, 15 };
+	const uint8_t _motorpins[4] = { 0, 14, 12, 13 };
 
 	for (int i = 0; i < nMotors; i++) {
 		throttle[i] = minValue;
@@ -28,13 +28,8 @@ MotorController& MotorController::getMotorControllerInstance() {
 }
 
 bool MotorController::startMotors() {
-	if (throttle[0] < throttleStartTarget) {
-		increaseMotorsValue(10);
-		delay(100);
-		return false;
-	} else {
-		return true;
-	}
+	increaseMotorsValue(2);
+	return !(throttle[0] < throttleStartTarget);
 }
 
 void MotorController::stopMotors() {
@@ -49,6 +44,8 @@ void MotorController::setMotorsValue(const uint16_t value) {
 
 void MotorController::setMotorValue(const uint8_t motorId,
 		const uint16_t value) {
+//	Serial.print("\t- ");
+//	Serial.print(value);
 	throttle[motorId] = value;
 	motors[motorId]->writeMotorValue(value);
 }
