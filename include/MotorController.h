@@ -19,13 +19,46 @@ public:
 	MotorController(MotorController &&other) = delete;
 	MotorController& operator=(const MotorController &other) = delete;
 
+	/**
+	 * Initializes the Motors and throttle values
+	 */
 	void initMotors();
+
+	/** Increases the speed of the motors by 2 until startup speed is received.
+	 *
+	 * @return False when < startup speed. True > startup speed
+	 */
 	bool startMotors();
+
+	/**
+	 * Stops the motors.
+	 */
 	void stopMotors();
+
+	/**
+	 * Sets all the motors with the given value.
+	 * @param value
+	 */
 	void setMotorsValue(const uint16_t value);
+
+	/**
+	 * Sets an unique motors with the given value.
+	 * @param motorId
+	 * @param value
+	 */
 	void setMotorValue(const uint8_t motorId, const uint16_t value);
 
+	/**
+	 * Add the given value to the current motors throttle.
+	 * @param increase
+	 */
 	void increaseMotorsValue(const uint16_t increase);
+
+	/**
+	 * Add the given value the the given motor throttle;
+	 * @param motorId
+	 * @param increase
+	 */
 	void increaseMotorValue(const uint8_t motorId, const uint16_t increase);
 
 private:

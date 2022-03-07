@@ -20,6 +20,10 @@ public:
 	Motor(const Motor &other) = delete;
 	Motor& operator=(Motor &&other) = delete;
 
+	/**
+	 * Write the value to the motor
+	 * @param value
+	 */
 	void writeMotorValue(const uint16_t value);
 	uint16_t getCurrentValue() const;
 	const uint16_t getMaxValue() const;

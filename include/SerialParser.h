@@ -22,6 +22,12 @@ public:
 	const SerialParser& operator=(const SerialParser &other) = delete;
 	SerialParser& operator=(SerialParser&&) = delete;
 
+	/**
+	 * Handles the incoming serial messages. When a char is received it stores it in a buffer.
+	 * When character 10 (enter) is received it will say a message is ready. So that this can be accessed.
+	 *
+	 * @param incomingMessage
+	 */
 	void handleIncomingMessage(char incomingMessage);
 
 	String getMessage();

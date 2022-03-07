@@ -17,6 +17,10 @@ public:
 	HCSR04(const HCSR04 &other) = delete;
 	HCSR04& operator=(const HCSR04 &other) = delete;
 
+	/**
+	 * Measures the distance.
+	 * @return Returns the measured distance.
+	 */
 	int16_t measureDistance();
 
 private:
