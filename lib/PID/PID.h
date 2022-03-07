@@ -18,14 +18,23 @@ public:
 	PID(const PID &other) = delete;
 	PID(PID &&other) = delete;
 
+	/**
+	 * Run the PID algorithm
+	 *
+	 * @param actualValue
+	 * @return Output of the PID
+	 */
 	float compute(const float actualValue);
-	void setMaxValue(int8_t maxValue);
-
+	/**
+	 * Reset the PID values to 0
+	 */
 	void reset();
+
 	float getDerivative() const;
 	float getError() const;
 	float getIntegral() const;
 	float getProportional() const;
+	void setMaxValue(int8_t maxValue);
 
 private:
 	float output;

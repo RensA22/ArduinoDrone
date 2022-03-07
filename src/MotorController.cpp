@@ -44,8 +44,6 @@ void MotorController::setMotorsValue(const uint16_t value) {
 
 void MotorController::setMotorValue(const uint8_t motorId,
 		const uint16_t value) {
-//	Serial.print("\t- ");
-//	Serial.print(value);
 	throttle[motorId] = value;
 	motors[motorId]->writeMotorValue(value);
 }

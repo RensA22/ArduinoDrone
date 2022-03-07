@@ -6,7 +6,7 @@
  */
 
 #include <states/FlyingIdleState.h>
-#include <states/HoverState.h>
+#include <states/TakeoffState.h>
 #include <Arduino.h>
 
 #include "SerialParser.h"
@@ -27,8 +27,8 @@ void FlyingIdleState::doActivity() {
 	if (SerialParser::getSerialParser().isMessageReady()) {
 		String message = SerialParser::getSerialParser().getMessage();
 
-		if (message == "hover") {
-			myContext->setCurrentState(new HoverState(myContext));
+		if (message == "takeoff") {
+			myContext->setCurrentState(new TakeoffState(myContext));
 			SerialParser::getSerialParser().clearBuffer();
 		}
 	}

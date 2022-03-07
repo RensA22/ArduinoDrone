@@ -12,8 +12,7 @@
 MPU6050::MPU6050() :
 		wire(&Wire), address(0x68), prevMicros(micros()), updateHz(0), gyro( {
 				.sensitivity = 65.5 }), accel( { .sensitivity = 4096 }), roll(
-				0.0), pitch(0.0), yaw(0.0), rollMotion(0.0), pitchMotion(0.0), first_run(
-				true) {
+				0.0), pitch(0.0), yaw(0.0), first_run(true) {
 
 }
 
@@ -218,9 +217,6 @@ void MPU6050::reset() {
 	pitch = 0;
 	yaw = 0;
 
-	rollMotion = 0;
-	pitchMotion = 0;
-
 	gyro.reset();
 	accel.reset();
 }
@@ -259,10 +255,3 @@ float MPU6050::getRoll() const {
 	return roll;
 }
 
-float MPU6050::getPitchMotion() const {
-	return pitchMotion;
-}
-
-float MPU6050::getRollMotion() const {
-	return rollMotion;
-}

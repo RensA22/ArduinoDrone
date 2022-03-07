@@ -9,6 +9,7 @@
 #define INCLUDE_STATES_TAKEOFFSTATE_H_
 
 #include <states/AbstractState.h>
+#include "Context.h"
 #include "HCSR04.h"
 #include "PID.h"
 
@@ -23,19 +24,12 @@ public:
 	void entryActivity();
 	void doActivity();
 	void exitActivity();
-	float calculateSetPoint(float angle, float throttle);
+
 private:
 	HCSR04 *distSens;
 	PID *altitudePID;
-	PID *pitchPID;
-	PID *rollPID;
 
-	uint16_t throttle;
-	uint16_t targetThrottle;
-	uint16_t throttleMotors[4];
-
-	float roll;
-	float pitch;
+	void reset();
 };
 
 #endif /* INCLUDE_STATES_TAKEOFFSTATE_H_ */
