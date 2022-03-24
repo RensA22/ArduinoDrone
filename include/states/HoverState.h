@@ -10,7 +10,6 @@
 
 #include <states/AbstractState.h>
 #include "Context.h"
-#include "PID.h"
 
 class HoverState: public AbstractState {
 public:
@@ -24,9 +23,6 @@ public:
 	void doActivity();
 	void exitActivity();
 
-private:
-	PID *rollPID;
-	PID *pitchPID;
 };
 
 #endif /* INCLUDE_STATES_HOVERSTATE_H_ */

@@ -9,6 +9,7 @@
 #define INCLUDE_STATES_TAKEOFFSTATE_H_
 
 #include <states/AbstractState.h>
+#include <states/FlyingState.h>
 #include "Context.h"
 #include "HCSR04.h"
 #include "PID.h"
@@ -26,9 +27,10 @@ public:
 	void exitActivity();
 
 private:
-	HCSR04 *distSens;
 	PID *altitudePID;
+	FlyingState *parentState;
 
+	float altitude;
 	void reset();
 };
 

@@ -7,6 +7,7 @@
 
 #include <arduino.h>
 #include "PID.h"
+#include "Logger.h"
 
 PID::PID(const float _desiredValue, const float _Kp, const float _Ki,
 		const float _Kd, const int16_t _minValue, const int16_t _maxValue) :
@@ -16,28 +17,35 @@ PID::PID(const float _desiredValue, const float _Kp, const float _Ki,
 				_maxValue) {
 }
 
-float PID::compute(const float actualValue) {
+float PID::compute(const float actualValue, const bool swapError) {
 	time = millis();
 	elapsedTime = (time - prevTime) / 1000;
 
-	error = actualValue - desiredValue;
+	error = (!swapError) ?
+			actualValue - desiredValue : desiredValue - actualValue;
 
 	proportional = Kp * error;
 
-//	if (error < 5 || error > -5) {
-	integral += Ki * error;
-//	}
+	float newIntegral = integral + Ki * error;
 
-	derivative = Kd * ((error - prevError) / elapsedTime);
+	derivative =
+			(!swapError) ?
+					Kd * ((error - prevError) / elapsedTime) :
+					Kd * ((prevError - error) / elapsedTime);
 
 	output = proportional + integral + derivative;
 
 	//making sure the output is never over min and max value
-	if (output < -1000) {
-		output = -1000;
-	} else if (output > 1000) {
-		output = 1000;
+	if (output < minValue) {
+		output = minValue;
+	} else if (output > maxValue) {
+		output = maxValue;
+	} else {
+		integral = newIntegral;
 	}
+
+	Logger::getLoggerInstance().log(String(elapsedTime, 5));
+
 	prevError = error;
 	prevTime = time;
 
@@ -71,4 +79,8 @@ float PID::getIntegral() const {
 
 float PID::getProportional() const {
 	return proportional;
+}
+
+float PID::getOutput() const {
+	return output;
 }

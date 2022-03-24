@@ -26,6 +26,9 @@ public:
 	void run();
 
 	void setIsFlying(bool isFlying);
+	void setAltThrottle(float altThrottle);
+	void setTargetThrottle(uint16_t targetThrottle);
+	uint16_t getThrottle() const;
 
 private:
 	PID *pitchPID;
@@ -37,6 +40,7 @@ private:
 
 	float roll;
 	float pitch;
+	float altThrottle;
 	bool isFlying;
 
 	/**

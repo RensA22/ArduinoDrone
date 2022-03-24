@@ -13,7 +13,7 @@
 class FlightController: public Context {
 public:
 	FlightController();
-	virtual ~FlightController() = default;
+	virtual ~FlightController();
 	FlightController(const FlightController &other) = delete;
 	FlightController(FlightController &&other) = delete;
 

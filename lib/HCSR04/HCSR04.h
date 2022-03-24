@@ -10,25 +10,45 @@
 
 class HCSR04 {
 public:
-	HCSR04(const uint8_t _trigPin, const uint8_t _echoPin);
+	static HCSR04& getHCSR04Instance();
 	virtual ~HCSR04() = default;
 
-	HCSR04() = delete;
 	HCSR04(const HCSR04 &other) = delete;
 	HCSR04& operator=(const HCSR04 &other) = delete;
+
+	/**This functions sets the initializes the sensor with the correct pins.
+	 * NEEDS TO BE RUN BEFORE ANY OTHER FUNCTIONS!!!
+	 *
+	 * Yellow wire = echo
+	 * Green wire = trig
+	 *
+	 * @param _trigPin
+	 * @param _echoPin
+	 */
+	void setup(const uint8_t _trigPin, const uint8_t _echoPin);
 
 	/**
 	 * Measures the distance.
 	 * @return Returns the measured distance.
 	 */
-	int16_t measureDistance();
+	float measureDistance();
+
+	/**
+	 * The distance sensor is positions on the drone above the ground.
+	 * This function will do a number of measurements. and determine the distance to the ground when the drone is idle.
+	 * @return offset
+	 */
+	void calcOffset();
 
 private:
-	const uint8_t trigPin;
-	const uint8_t echoPin;
+	HCSR04();
+
+	uint8_t trigPin;
+	uint8_t echoPin;
 	float duration;
-	int16_t distance;
-	uint8_t distOffst;
+	float distance;
+	float distOffst;
+	bool initialized;
 };
 
 #endif /* LIB_HCSR04_HCSR04_H_ */

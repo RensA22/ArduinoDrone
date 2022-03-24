@@ -8,11 +8,12 @@
 #include <Arduino.h>
 #include "MPU6050.h"
 #include "math.h"
+#include "Logger.h"
 
 MPU6050::MPU6050() :
 		wire(&Wire), address(0x68), prevMicros(micros()), updateHz(0), gyro( {
 				.sensitivity = 65.5 }), accel( { .sensitivity = 4096 }), roll(
-				0.0), pitch(0.0), yaw(0.0), first_run(true) {
+				0.0), pitch(0.0), yaw(0.0) {
 
 }
 
@@ -27,7 +28,7 @@ MPU6050& MPU6050::getMPU6050Instance() {
 
 void MPU6050::setup() {
 	while (!begin()) {
-		Serial.println("Could not connect to GY521");
+		Logger::getLoggerInstance().log("Could not connect to GY521");
 		delay(500);
 	}
 
@@ -50,7 +51,7 @@ void MPU6050::setup() {
 }
 
 void MPU6050::calculateOffset() {
-	Serial.println("Calculating offset");
+	Logger::getLoggerInstance().log("Calculating offset");
 
 	uint32_t nLoops = 2000;
 	double offX = 0;
@@ -98,7 +99,7 @@ void MPU6050::calculateOffset() {
 	accel.offsetX = offX / nLoops;
 	accel.offsetY = offY / nLoops;
 
-	Serial.println("Calculating offset done!");
+	Logger::getLoggerInstance().log("Calculating offset done!");
 }
 
 void MPU6050::update() {
@@ -124,13 +125,6 @@ void MPU6050::updateGyroData() {
 	gyro.rawY -= round(gyro.offsetY);
 	gyro.rawZ -= round(gyro.offsetZ);
 
-//	Serial.print("GyroRawX:\t");
-//	Serial.print(gyro.rawX);
-//	Serial.print("\tGyroRawY:\t");
-//	Serial.print(gyro.rawY);
-//	Serial.print("\tGyroRawZ:\t");
-//	Serial.print(gyro.rawZ);
-
 	float angX = 0.0;
 	float angY = 0.0;
 	if (updateHz < 2) {
@@ -142,16 +136,10 @@ void MPU6050::updateGyroData() {
 		if (angX > 0.01 || angX < -0.01) {
 			gyro.angleX += angX;
 		}
-//		Serial.print("\tGyroAngleX:\t");
-//		Serial.print(gyro.angleX);
-//		Serial.print("\t");
-//		Serial.println((float) millis() / 1000, 4);
 
 		if (angY > 0.01 || angY < -0.01) {
 			gyro.angleY += angY;
 		}
-//		Serial.print("\tGyroAngleY:\t");
-//		Serial.println(gyro.angleY);
 	}
 
 //Calcule the looptime in seconds. Micros are used to up the accuracy.
@@ -165,30 +153,18 @@ void MPU6050::updateAccData() {
 	accel.rawY = getRegister(0x3d) << 8 | getRegister(0x3e);
 	accel.rawZ = getRegister(0x3f) << 8 | getRegister(0x40);
 
-//	Serial.print("AccelRawX:\t");
-//	Serial.print(accel.rawX);
-//	Serial.print("\tAccelRawY:\t");
-//	Serial.print(accel.rawY);
-//	Serial.print("\tAccelRawZ:\t");
-//	Serial.print(accel.rawZ);
-
 	uint64_t total_acc = sqrt(
 			pow(accel.rawX, 2) + pow(accel.rawY, 2) + pow(accel.rawZ, 2));
 
 	if (abs(accel.rawX) < total_acc) {
 		accel.angleX = (asin((float) accel.rawY / total_acc) * (180 / PI))
 				- accel.offsetX;
-//		Serial.print("\tAccelAngleX:\t");
-//		Serial.print(accel.angleX);
 	}
 
 	if (abs(accel.rawY) < total_acc) {
 		accel.angleY = (asin((float) accel.rawX / total_acc) * (180 / PI))
 				- accel.offsetY;
-//		Serial.print("\tAccelAngleY:\t");
-//		Serial.print(accel.angleY);
 	}
-//	Serial.println();
 
 }
 
@@ -255,3 +231,6 @@ float MPU6050::getRoll() const {
 	return roll;
 }
 
+const sensor& MPU6050::getAccel() const {
+	return accel;
+}

@@ -6,15 +6,15 @@
  */
 
 #include <Context.h>
+#include "Logger.h"
 
 Context::Context(String _name) :
 		currentState(nullptr), name(_name) {
 }
 
 Context::~Context() {
-	Serial.print(name);
-	Serial.print("    ");
-	Serial.println(" ~Context");
+	Logger::getLoggerInstance().log(name + "\t~Context");
+
 //	if (currentState != nullptr) {
 //		Serial.print("~Context: ");
 //		Serial.println(this->currentState->getName());
@@ -25,10 +25,8 @@ Context::~Context() {
 
 void Context::setCurrentState(AbstractState *newState) {
 	if (this->currentState != nullptr) {
-		Serial.print(name);
-		Serial.print("    ");
-		Serial.print("Exit: ");
-		Serial.println(this->currentState->getName());
+		Logger::getLoggerInstance().log(
+				name + "\tExit:\t" + this->currentState->getName());
 
 		this->currentState->exitActivity();
 
@@ -37,9 +35,11 @@ void Context::setCurrentState(AbstractState *newState) {
 
 	this->currentState = newState;
 
-	Serial.print(name);
-	Serial.print("    ");
-	Serial.print("Entry: ");
-	Serial.println(this->currentState->getName());
+	Logger::getLoggerInstance().log(
+			name + "\tEntry:\t" + this->currentState->getName());
 	this->currentState->entryActivity();
+}
+
+const AbstractState* Context::getCurrentState() const {
+	return currentState;
 }

@@ -6,28 +6,16 @@
  */
 
 #include <states/HoverState.h>
-#include <states/StopState.h>
-#include <states/FlyingState.h>
-
-#include "MPU6050.h"
-#include "MotorController.h"
-#include "SerialParser.h"
 
 HoverState::HoverState(Context *_context) :
-		AbstractState(_context, "Hover"), rollPID(
-				new PID(0, 0.05, 0.005, 0.02, -1000, 1000)), pitchPID(
-				new PID(0, 0.05, 0.005, 0.02, -1000, 1000)) {
+		AbstractState(_context, "Hover") {
 }
-
 HoverState::~HoverState() {
-	delete rollPID;
-	delete pitchPID;
+
 }
 
 void HoverState::entryActivity() {
 	// give myself time to hold the drone steady
-	Serial.println("5 sec");
-	delay(5000);
 }
 
 void HoverState::doActivity() {

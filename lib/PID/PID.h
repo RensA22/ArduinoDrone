@@ -24,7 +24,7 @@ public:
 	 * @param actualValue
 	 * @return Output of the PID
 	 */
-	float compute(const float actualValue);
+	float compute(const float actualValue, const bool swapError = false);
 	/**
 	 * Reset the PID values to 0
 	 */
@@ -35,6 +35,7 @@ public:
 	float getIntegral() const;
 	float getProportional() const;
 	void setMaxValue(int8_t maxValue);
+	float getOutput() const;
 
 private:
 	float output;

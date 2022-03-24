@@ -21,6 +21,7 @@ public:
 	virtual void run() =0;
 
 	void setCurrentState(AbstractState *newState);
+	const AbstractState* getCurrentState() const;
 
 protected:
 	AbstractState *currentState;

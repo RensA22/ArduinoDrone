@@ -59,6 +59,7 @@ public:
 
 	float getPitch() const;
 	float getRoll() const;
+	const sensor& getAccel() const;
 
 private:
 	MPU6050();
@@ -109,7 +110,6 @@ private:
 	float pitch;
 	float yaw;
 
-	bool first_run;
 };
 
 #endif /* LIB_MPU6050_H_ */

@@ -17,9 +17,9 @@ Motor::Motor(const uint8_t _motorPin, const uint16_t _minValue,
 
 void Motor::writeMotorValue(const uint16_t value) {
 	uint16_t actualVal = value;
-	if (actualVal < minValue) {
+	if (actualVal <= minValue) {
 		actualVal = minValue;
-	} else if (actualVal > maxValue) {
+	} else if (actualVal >= maxValue) {
 		actualVal = maxValue;
 	}
 

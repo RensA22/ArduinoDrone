@@ -9,14 +9,32 @@
 #include "HCSR04.h"
 #include "Wire.h"
 
-HCSR04::HCSR04(const uint8_t _trigPin, const uint8_t _echoPin) :
-		trigPin(_trigPin), echoPin(_echoPin), duration(0), distance(0), distOffst(
-				15) {
-	pinMode(trigPin, OUTPUT);
-	pinMode(echoPin, INPUT);
+HCSR04::HCSR04() :
+		trigPin(-1), echoPin(-1), duration(0.0), distance(0.0), distOffst(0.0), initialized(
+				false) {
+
 }
 
-int16_t HCSR04::measureDistance() {
+HCSR04& HCSR04::getHCSR04Instance() {
+	static HCSR04 instance;
+
+	return instance;
+}
+
+void HCSR04::setup(const uint8_t _trigPin, const uint8_t _echoPin) {
+	trigPin = _trigPin;
+	echoPin = _echoPin;
+
+	pinMode(trigPin, OUTPUT);
+	pinMode(echoPin, INPUT);
+
+	initialized = true;
+}
+
+float HCSR04::measureDistance() {
+	if (!initialized) {
+		return -1;
+	}
 	digitalWrite(trigPin, LOW);
 	delayMicroseconds(2);
 
@@ -30,8 +48,23 @@ int16_t HCSR04::measureDistance() {
 
 	// Calculating the distance in cm
 	distance = duration * 0.034 / 2;
-	distance -= (float) distOffst;
+	distance -= distOffst;
 
 	return distance;
 }
 
+void HCSR04::calcOffset() {
+	if (!initialized) {
+		return;
+	}
+
+	float offDistance = 0;
+	const uint8_t nRuns = 25;
+
+	for (int i = 0; i < nRuns; i++) {
+		offDistance += measureDistance();
+	}
+
+	distOffst = offDistance / nRuns;
+
+}
