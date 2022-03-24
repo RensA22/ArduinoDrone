@@ -23,8 +23,6 @@ void Motor::writeMotorValue(const uint16_t value) {
 		actualVal = maxValue;
 	}
 
-//	Serial.print("\t- ");
-//	Serial.print(value);
 	currentValue = actualVal;
 	ESC.writeMicroseconds(actualVal);
 }
