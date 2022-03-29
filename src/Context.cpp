@@ -13,20 +13,14 @@ Context::Context(String _name) :
 }
 
 Context::~Context() {
-	Logger::getLoggerInstance().log(name + "\t~Context");
+	Logger::getLoggerInstance().log(name + "\t~Context", INFO);
 
-//	if (currentState != nullptr) {
-//		Serial.print("~Context: ");
-//		Serial.println(this->currentState->getName());
-//		this->currentState->exitActivity();
-//		delete currentState;
-//	}
 }
 
 void Context::setCurrentState(AbstractState *newState) {
 	if (this->currentState != nullptr) {
 		Logger::getLoggerInstance().log(
-				name + "\tExit:\t" + this->currentState->getName());
+				name + "\tExit:\t" + this->currentState->getName(), INFO);
 
 		this->currentState->exitActivity();
 
@@ -36,7 +30,7 @@ void Context::setCurrentState(AbstractState *newState) {
 	this->currentState = newState;
 
 	Logger::getLoggerInstance().log(
-			name + "\tEntry:\t" + this->currentState->getName());
+			name + "\tEntry:\t" + this->currentState->getName(), INFO);
 	this->currentState->entryActivity();
 }
 

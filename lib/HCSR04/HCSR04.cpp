@@ -8,6 +8,7 @@
 #include <Arduino.h>
 #include "HCSR04.h"
 #include "Wire.h"
+#include "Logger.h"
 
 HCSR04::HCSR04() :
 		trigPin(-1), echoPin(-1), duration(0.0), distance(0.0), distOffst(0.0), initialized(
@@ -33,6 +34,8 @@ void HCSR04::setup(const uint8_t _trigPin, const uint8_t _echoPin) {
 
 float HCSR04::measureDistance() {
 	if (!initialized) {
+		Logger::getLoggerInstance().log(
+				"measureDistance() - HCSRO4 not initialised", ERROR);
 		return -1;
 	}
 	digitalWrite(trigPin, LOW);
@@ -55,6 +58,8 @@ float HCSR04::measureDistance() {
 
 void HCSR04::calcOffset() {
 	if (!initialized) {
+		Logger::getLoggerInstance().log("calcOffset() - HCSRO4 not initialised",
+				ERROR);
 		return;
 	}
 

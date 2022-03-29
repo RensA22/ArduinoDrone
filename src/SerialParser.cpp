@@ -7,6 +7,7 @@
 
 #include <Arduino.h>
 #include "SerialParser.h"
+#include "Logger.h"
 
 SerialParser& SerialParser::getSerialParser() {
 	static SerialParser instance;
@@ -25,7 +26,8 @@ void SerialParser::handleIncomingMessage(char incomingMessage) {
 		buffer[bufferIndex] = incomingMessage;
 		++bufferIndex;
 		if (bufferIndex > bufferSize) {
-			Serial.println("Text to long for buffer. MAX 10 characters");
+			Logger::getLoggerInstance().log(
+					"Text to long for buffer. MAX 10 characters", ERROR);
 			bufferFull = true;
 		}
 	}

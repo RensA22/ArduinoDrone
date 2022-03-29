@@ -6,6 +6,7 @@
  */
 
 #include "Motor.h"
+#include "Logger.h"
 
 Motor::Motor(const uint8_t _motorPin, const uint16_t _minValue,
 		const uint16_t _maxValue) :

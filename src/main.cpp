@@ -10,6 +10,8 @@
 #include "FlightController.h"
 #include "SerialParser.h"
 #include "MotorController.h"
+#include "Logger.h"
+#include "MPU6050.h"
 
 FlightController fc;
 
@@ -32,7 +34,7 @@ void loop() {
 // Emergency stop
 	if (digitalRead(safetyPin) == 0) {
 		MotorController::getMotorControllerInstance().stopMotors();
-		Serial.println("STOP!");
+		Logger::getLoggerInstance().log("STOP!", INFO);
 		delay(1000);
 	} else {
 		if (Serial.available() > 0) {

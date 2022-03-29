@@ -24,7 +24,6 @@ void FlyingIdleState::entryActivity() {
 void FlyingIdleState::doActivity() {
 	if (SerialParser::getSerialParser().isMessageReady()) {
 		String message = SerialParser::getSerialParser().getMessage();
-		Serial.println(message);
 
 		if (message == "takeoff") {
 			myContext->setCurrentState(new TakeoffState(myContext));
