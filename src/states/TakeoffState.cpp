@@ -38,25 +38,31 @@ void TakeoffState::doActivity() {
 
 	altitude = HCSR04::getHCSR04Instance().measureDistance();
 
-	float altPID = altitudePID->compute(altitude,
-			(altitude < 50) ? true : false);
-
 	Serial.print("Altitude:\t");
 	Serial.print(altitude);
-	Serial.print("\tAlt error:\t");
-	Serial.print(altitudePID->getError());
-	Serial.print("\tAlt Prop:\t");
-	Serial.print(altitudePID->getProportional());
-	Serial.print("\tAlt Integralk:\t");
-	Serial.print(altitudePID->getIntegral());
-	Serial.print("\tAlt Dervi:\t");
-	Serial.print(altitudePID->getDerivative());
-	Serial.print("\tAlt output:\t");
-	Serial.print(altitudePID->getOutput());
-	Serial.print("\tAltPID:\t");
-	Serial.print(altPID);
 
-	parentState->setAltThrottle(altPID);
+	if (altitude > 0.5) {
+		parentState->setIsFlying(true);
+	}
+
+	float altPID = altitudePID->compute(altitude, true);
+
+//	Serial.print("Altitude:\t");
+//	Serial.print(altitude);
+//	Serial.print("\tAlt error:\t");
+//	Serial.print(altitudePID->getError());
+//	Serial.print("\tAlt Prop:\t");
+//	Serial.print(altitudePID->getProportional());
+//	Serial.print("\tAlt Integralk:\t");
+//	Serial.print(altitudePID->getIntegral());
+//	Serial.print("\tAlt Dervi:\t");
+//	Serial.print(altitudePID->getDerivative());
+//	Serial.print("\tAlt output:\t");
+//	Serial.print(altitudePID->getOutput());
+//	Serial.print("\tAltPID:\t");
+//	Serial.print(altPID);
+
+	parentState->setAltitudeThrottle((uint16_t) round(altPID));
 
 }
 
@@ -65,4 +71,8 @@ void TakeoffState::exitActivity() {
 }
 
 void TakeoffState::reset() {
+}
+
+float TakeoffState::getAltitude() const {
+	return altitude;
 }

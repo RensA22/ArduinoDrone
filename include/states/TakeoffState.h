@@ -25,6 +25,7 @@ public:
 	void entryActivity();
 	void doActivity();
 	void exitActivity();
+	float getAltitude() const;
 
 private:
 	PID *altitudePID;
