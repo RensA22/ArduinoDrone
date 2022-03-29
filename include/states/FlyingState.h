@@ -26,7 +26,7 @@ public:
 	void run();
 
 	void setIsFlying(bool isFlying);
-	void setAltThrottle(float altThrottle);
+	void setAltitudeThrottle(uint16_t altThrottle);
 	void setTargetThrottle(uint16_t targetThrottle);
 	uint16_t getThrottle() const;
 
@@ -34,13 +34,13 @@ private:
 	PID *pitchPID;
 	PID *rollPID;
 
-	uint16_t throttle;
+	uint16_t baseThrottle;
 	uint16_t targetThrottle;
+	uint16_t altitudeThrottle;
 	uint16_t throttleMotors[4];
 
 	float roll;
 	float pitch;
-	float altThrottle;
 	bool isFlying;
 
 	/**
