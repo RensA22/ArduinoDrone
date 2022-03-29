@@ -22,7 +22,7 @@ public:
 	Logger(Logger &&other) = delete;
 	Logger& operator=(const Logger &other) = delete;
 
-	void log(const String message);
+	void log(const String message, const LOGLEVEL messageLevel);
 
 	void setLogLevel(const LOGLEVEL level);
 

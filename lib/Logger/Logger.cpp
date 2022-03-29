@@ -17,20 +17,36 @@ Logger& Logger::getLoggerInstance() {
 	return instance;
 }
 
-void Logger::log(const String message) {
+void Logger::log(const String message, const LOGLEVEL messageLevel) {
+
 	switch (logLevel) {
 	case INFO:
-		Serial.print("[INFO]\t");
-		Serial.println(message);
+		switch (messageLevel) {
+		case INFO:
+			Serial.print("[INFO]\t");
+			Serial.println(message);
+			break;
+		case ERROR:
+			Serial.print("[ERROR]\t");
+			Serial.println(message);
+			break;
+		case OFF:
+		default:
+			break;
+		}
 		break;
 	case ERROR:
-		Serial.print("[ERROR]\t");
-		Serial.println(message);
+		if (messageLevel == ERROR) {
+			Serial.print("[ERROR]\t");
+			Serial.println(message);
+		}
 		break;
 	case OFF:
 	default:
 		break;
+
 	}
+
 }
 
 void Logger::setLogLevel(const LOGLEVEL level) {
