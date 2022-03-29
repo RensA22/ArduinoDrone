@@ -28,7 +28,7 @@ MPU6050& MPU6050::getMPU6050Instance() {
 
 void MPU6050::setup() {
 	while (!begin()) {
-		Logger::getLoggerInstance().log("Could not connect to GY521");
+		Logger::getLoggerInstance().log("Could not connect to GY521", ERROR);
 		delay(500);
 	}
 
@@ -40,7 +40,7 @@ void MPU6050::setup() {
 
 	//setGyroSensitivity 65.5
 	setRegister(0x1b, 0b00001000);
-	//setAccelSensitivity 8192
+	//setAccelSensitivity 4096
 	setRegister(0x1c, 0b00010000);
 
 //	setRegister(0x1a, 0b00000011);
@@ -51,55 +51,51 @@ void MPU6050::setup() {
 }
 
 void MPU6050::calculateOffset() {
-	Logger::getLoggerInstance().log("Calculating offset");
+	Logger::getLoggerInstance().log("Calculating offset", INFO);
 
 	uint32_t nLoops = 2000;
-	double offX = 0;
-	double offY = 0;
-	double offZ = 0;
+	double offXgyro = 0;
+	double offYgyro = 0;
+	double offZgyro = 0;
+
+	double offXaccel = 0;
+	double offYaccel = 0;
 
 	for (uint32_t i = 0; i < nLoops; i++) {
 		int16_t rawXgyro = getRegister(0x43) << 8 | getRegister(0x44);
 		int16_t rawYgyro = getRegister(0x45) << 8 | getRegister(0x46);
 		int16_t rawZgyro = getRegister(0x47) << 8 | getRegister(0x48);
 
-		offX += rawXgyro;
-		offY += rawYgyro;
-		offZ += rawZgyro;
-		yield();
-	}
-
-	gyro.offsetX = offX / nLoops;
-	gyro.offsetY = offY / nLoops;
-	gyro.offsetZ = offZ / nLoops;
-
-	offX = 0;
-	offY = 0;
-	offZ = 0;
-
-	for (uint32_t i = 0; i < nLoops; i++) {
 		int16_t rawXAcc = getRegister(0x3b) << 8 | getRegister(0x3c);
 		int16_t rawYAcc = getRegister(0x3d) << 8 | getRegister(0x3e);
 		int16_t rawZAcc = getRegister(0x3f) << 8 | getRegister(0x40);
+
+		offXgyro += rawXgyro;
+		offYgyro += rawYgyro;
+		offZgyro += rawZgyro;
 
 		uint64_t total_acc = sqrt(
 				pow(rawXAcc, 2) + pow(rawYAcc, 2) + pow(rawZAcc, 2));
 
 		if (abs(rawXAcc) < total_acc) {
-			offX += asin((float) rawYAcc / total_acc) * (180 / PI);
+			offXaccel += asin((float) rawYAcc / total_acc) * (180 / PI);
 		}
 
 		if (abs(rawYAcc) < total_acc) {
-			offY += asin((float) rawXAcc / total_acc) * (180 / PI);
+			offYaccel += asin((float) rawXAcc / total_acc) * (180 / PI);
 		}
 
 		yield();
 	}
 
-	accel.offsetX = offX / nLoops;
-	accel.offsetY = offY / nLoops;
+	gyro.offsetX = offXgyro / nLoops;
+	gyro.offsetY = offYgyro / nLoops;
+	gyro.offsetZ = offZgyro / nLoops;
 
-	Logger::getLoggerInstance().log("Calculating offset done!");
+	accel.offsetX = offXaccel / nLoops;
+	accel.offsetY = offYaccel / nLoops;
+
+	Logger::getLoggerInstance().log("Calculating offset done!", INFO);
 }
 
 void MPU6050::update() {
@@ -127,7 +123,7 @@ void MPU6050::updateGyroData() {
 
 	float angX = 0.0;
 	float angY = 0.0;
-	if (updateHz < 2) {
+	if (updateHz < 1) {
 
 		//Calculate the raw data to degrees per sec
 		angX = (float) gyro.rawX / gyro.sensitivity * updateHz;
@@ -157,7 +153,7 @@ void MPU6050::updateAccData() {
 			pow(accel.rawX, 2) + pow(accel.rawY, 2) + pow(accel.rawZ, 2));
 
 	if (abs(accel.rawX) < total_acc) {
-		accel.angleX = (asin((float) accel.rawY / total_acc) * (180 / PI))
+		accel.angleX = (asin((float) accel.rawY / total_acc)) * (180 / PI)
 				- accel.offsetX;
 	}
 
@@ -203,7 +199,7 @@ void MPU6050::setRegister(uint8_t reg, uint8_t value) {
 	wire->write(value);
 // no need to do anything if not connected.
 	if (wire->endTransmission() != 0) {
-		Serial.println("Error writing to register");
+		Logger::getLoggerInstance().log("Error writing to register", ERROR);
 	}
 }
 
@@ -211,12 +207,13 @@ uint8_t MPU6050::getRegister(uint8_t reg) {
 	wire->beginTransmission(address);
 	wire->write(reg);
 	if (wire->endTransmission() != 0) {
-		Serial.println("Error getting register endTransmission !=0");
+		Logger::getLoggerInstance().log(
+				"Error getting register endTransmission !=0", ERROR);
 		return 0;
 	}
 	uint8_t n = wire->requestFrom(address, (uint8_t) 1);
 	if (n != 1) {
-		Serial.println("Error getting register N != 1");
+		Logger::getLoggerInstance().log("Error getting register N != 1", ERROR);
 		return 0;
 	}
 	uint8_t val = wire->read();
