@@ -6,6 +6,7 @@
  */
 
 #include <MotorController.h>
+#include "Logger.h"
 
 MotorController::MotorController() :
 		nMotors(4), minValue(1000), maxValue(1650), throttleStartTarget(1425) {
@@ -44,8 +45,10 @@ void MotorController::setMotorsValue(const uint16_t value) {
 
 void MotorController::setMotorValue(const uint8_t motorId,
 		const uint16_t value) {
-	throttle[motorId] = value;
-	motors[motorId]->writeMotorValue(value);
+	if (throttle[motorId] != value) {
+		throttle[motorId] = value;
+		motors[motorId]->writeMotorValue(value);
+	}
 }
 
 void MotorController::increaseMotorsValue(const uint16_t increase) {
@@ -58,4 +61,8 @@ void MotorController::increaseMotorValue(const uint8_t motorId,
 		const uint16_t increase) {
 	throttle[motorId] += increase;
 	motors[motorId]->writeMotorValue(throttle[motorId]);
+}
+
+uint16_t MotorController::getThrottle(const uint8_t motorId) {
+	return throttle[motorId];
 }

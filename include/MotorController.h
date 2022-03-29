@@ -61,6 +61,8 @@ public:
 	 */
 	void increaseMotorValue(const uint8_t motorId, const uint16_t increase);
 
+	uint16_t getThrottle(const uint8_t motorId);
+
 private:
 	MotorController();
 
