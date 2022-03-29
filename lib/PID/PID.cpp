@@ -24,25 +24,31 @@ float PID::compute(const float actualValue, const bool swapError) {
 	error = (!swapError) ?
 			actualValue - desiredValue : desiredValue - actualValue;
 
+//	error = actualValue - desiredValue;
+
 	proportional = Kp * error;
 
-	float newIntegral = integral + Ki * error;
+	integral += error * elapsedTime;
+	float newIntegral = integral * Ki;
 
-	derivative =
-			(!swapError) ?
-					Kd * ((error - prevError) / elapsedTime) :
-					Kd * ((prevError - error) / elapsedTime);
+//	derivative =
+//			(!swapError) ?
+//					Kd * ((error - prevError) / elapsedTime) :
+//					Kd * ((prevError - error) / elapsedTime);
 
-	output = proportional + integral + derivative;
+	derivative = ((error - prevError) / elapsedTime) * Kd;
+
+	output = proportional + newIntegral + derivative;
 
 	//making sure the output is never over min and max value
 	if (output < minValue) {
 		output = minValue;
 	} else if (output > maxValue) {
 		output = maxValue;
-	} else {
-		integral = newIntegral;
 	}
+//	else {
+//		integral = newIntegral;
+//	}
 
 	prevError = error;
 	prevTime = time;
