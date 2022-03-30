@@ -27,7 +27,7 @@ void SerialParser::handleIncomingMessage(char incomingMessage) {
 		++bufferIndex;
 		if (bufferIndex > bufferSize) {
 			Logger::getLoggerInstance().log(
-					"Text to long for buffer. MAX 10 characters", ERROR);
+					"Text to long for buffer. MAX 10 characters", WARNING);
 			bufferFull = true;
 		}
 	}

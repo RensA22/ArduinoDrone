@@ -4,8 +4,7 @@
  *  Created on: 8 mrt. 2022
  *      Author: Rens
  */
-//#define UNIT_TEST
-
+#define UNIT_TEST
 #ifdef UNIT_TEST
 
 #include <Arduino.h>
@@ -25,13 +24,14 @@ namespace TEST_PID {
 		unsigned long elapsedTime = 0;
 
 		int i = 0;
-		int valueArray[10] = {1, 5, 8, 12, 6, 3, 2, -5, -7, -15};
-		float awnserArray[10] = {14.0, 57.52, 49.62, 68.28, -65.48, -32.36, -8.80, -94.26, -34.86, -122.0};
+		int valueArray[10] = { 1, 5, 8, 12, 6, 3, 2, -5, -7, -15 };
+		float awnserArray[10] = { 14.0, 57.52, 49.62, 68.28, -65.48, -32.36,
+				-8.80, -94.26, -34.86, -122.0 };
 
-		while(i < 10){
+		while (i < 10) {
 			time = millis();
 			elapsedTime = (time - prevTime);
-			if(elapsedTime >= 20){
+			if (elapsedTime >= 20) {
 				float value = pid.compute(valueArray[i]);
 				TEST_ASSERT_EQUAL_FLOAT(awnserArray[i], value);
 				prevTime = millis();
@@ -79,19 +79,32 @@ namespace TEST_STATEMACHINE {
 	void test_statemachine_stop(void) {
 		FlightController fc;
 
+	}
+}
 
+namespace TEST_LOGGER {
+	void test_log_info(void) {
+		Logger::getLoggerInstance().log("tessst", INFO);
+
+		while (true) {
+			if (Serial.available() > 0) {
+				Serial.print(": ");
+				Serial.println(Serial.read());
+			}
+		}
 	}
 }
 
 void setup() {
 	Serial.begin(115200);
-	Logger::getLoggerInstance().setLogLevel(LOGLEVEL::OFF);
+	Logger::getLoggerInstance().setLogLevel(LOGLEVEL::INFO);
 	delay(2000);
 	UNITY_BEGIN();
 
-	RUN_TEST(TEST_PID::test_PID_compute);
-	RUN_TEST(TEST_PID::test_PID_reset);
-	RUN_TEST(TEST_STATEMACHINE::test_statemachine_start);
+//	RUN_TEST(TEST_PID::test_PID_compute);
+//	RUN_TEST(TEST_PID::test_PID_reset);
+//	RUN_TEST(TEST_STATEMACHINE::test_statemachine_start);
+	RUN_TEST(TEST_LOGGER::test_log_info);
 
 	UNITY_END();
 
