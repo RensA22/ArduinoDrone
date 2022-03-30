@@ -18,12 +18,14 @@ Logger& Logger::getLoggerInstance() {
 }
 
 void Logger::log(const String message, const LOGLEVEL messageLevel) {
-
-	switch (logLevel) {
-	case INFO:
+	if (messageLevel <= logLevel) {
 		switch (messageLevel) {
 		case INFO:
 			Serial.print("[INFO]\t");
+			Serial.println(message);
+			break;
+		case WARNING:
+			Serial.print("[WARNING]\t");
 			Serial.println(message);
 			break;
 		case ERROR:
@@ -34,18 +36,35 @@ void Logger::log(const String message, const LOGLEVEL messageLevel) {
 		default:
 			break;
 		}
-		break;
-	case ERROR:
-		if (messageLevel == ERROR) {
-			Serial.print("[ERROR]\t");
-			Serial.println(message);
-		}
-		break;
-	case OFF:
-	default:
-		break;
-
 	}
+
+//	switch (logLevel) {
+//	case INFO:
+//		switch (messageLevel) {
+//		case INFO:
+//			Serial.print("[INFO]\t");
+//			Serial.println(message);
+//			break;
+//		case ERROR:
+//			Serial.print("[ERROR]\t");
+//			Serial.println(message);
+//			break;
+//		case OFF:
+//		default:
+//			break;
+//		}
+//		break;
+//	case ERROR:
+//		if (messageLevel == ERROR) {
+//			Serial.print("[ERROR]\t");
+//			Serial.println(message);
+//		}
+//		break;
+//	case OFF:
+//	default:
+//		break;
+//
+//	}
 
 }
 

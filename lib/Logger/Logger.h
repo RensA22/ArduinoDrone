@@ -11,7 +11,7 @@
 #include <Arduino.h>
 
 enum LOGLEVEL {
-	OFF, INFO, ERROR
+	OFF, ERROR, WARNING, INFO
 };
 
 class Logger {
