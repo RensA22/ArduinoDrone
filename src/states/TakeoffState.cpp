@@ -43,6 +43,9 @@ void TakeoffState::doActivity() {
 
 	if (altitude > 0.5) {
 		parentState->setIsFlying(true);
+	}else if(altitude > -1) {
+		parentState->setIsFlying(false);
+		parentState->reset();
 	}
 
 	float altPID = altitudePID->compute(altitude, true);

@@ -25,6 +25,13 @@ public:
 	void exitActivity();
 	void run();
 
+
+	/**
+	 * Resets the PID and the values roll and pitch
+	 */
+	void reset();
+
+
 	void setIsFlying(bool isFlying);
 	void setAltitudeThrottle(uint16_t altThrottle);
 	void setTargetThrottle(uint16_t targetThrottle);
@@ -42,11 +49,6 @@ private:
 	float roll;
 	float pitch;
 	bool isFlying;
-
-	/**
-	 * Resets the PID and the values roll and pitch
-	 */
-	void reset();
 
 	/**
 	 * Handles the serial communication message if a message is received.
