@@ -12,8 +12,10 @@
 
 #include "Context.h"
 #include "SerialParser.h"
-#include "MPU6050.h"
 #include "MotorController.h"
+#include "HCSR04.h"
+#include "MPU6050.h"
+#include "PID.h"
 
 FlyingState::FlyingState(Context *_context) :
 		AbstractState(_context, "Flying"), Context("Flying"), pitchPID(
@@ -45,7 +47,7 @@ void FlyingState::entryActivity() {
 }
 
 void FlyingState::doActivity() {
-	MPU6050::getMPU6050Instance().update();
+	IMUDriver::MPU6050::getMPU6050Instance().update();
 
 	if (!handleSerial()) {
 		return;
@@ -53,8 +55,8 @@ void FlyingState::doActivity() {
 
 	this->run();
 
-	float rollMPU = MPU6050::getMPU6050Instance().getRoll();
-	float pitchMPU = MPU6050::getMPU6050Instance().getPitch();
+	float rollMPU = IMUDriver::MPU6050::getMPU6050Instance().getRoll();
+	float pitchMPU = IMUDriver::MPU6050::getMPU6050Instance().getPitch();
 
 	if (isFlying) {
 		roll = rollPID->compute(rollMPU);

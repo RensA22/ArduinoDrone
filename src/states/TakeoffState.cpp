@@ -7,9 +7,10 @@
 
 #include <states/TakeoffState.h>
 #include "SerialParser.h"
-#include "MPU6050.h"
 #include "MotorController.h"
 #include "states/StopState.h"
+#include "MPU6050.h"
+#include "PID.h"
 
 TakeoffState::TakeoffState(Context *_context) :
 		AbstractState(_context, "Takeoff"), altitudePID(
@@ -24,8 +25,8 @@ TakeoffState::~TakeoffState() {
 
 void TakeoffState::entryActivity() {
 	reset();
-	HCSR04::getHCSR04Instance().setup(2, 16);
-	HCSR04::getHCSR04Instance().calcOffset();
+	RangefinderDriver::HCSR04::getHCSR04Instance().setup(2, 16);
+	RangefinderDriver::HCSR04::getHCSR04Instance().calcOffset();
 
 	parentState = (FlyingState*) myContext;
 	parentState->setTargetThrottle(1525);
@@ -36,7 +37,7 @@ void TakeoffState::doActivity() {
 		String message = SerialParser::getSerialParser().getMessage();
 	}
 
-	altitude = HCSR04::getHCSR04Instance().measureDistance();
+	altitude = RangefinderDriver::HCSR04::getHCSR04Instance().measureDistance();
 
 	Serial.print("Altitude:\t");
 	Serial.print(altitude);

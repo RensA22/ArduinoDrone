@@ -1,3 +1,4 @@
+
 /*
  * main.cpp
  *
@@ -11,7 +12,7 @@
 #include "SerialParser.h"
 #include "MotorController.h"
 #include "Logger.h"
-#include "MPU6050.h"
+#include "../lib/IMUDriver/MPU6050.h"
 
 FlightController fc;
 

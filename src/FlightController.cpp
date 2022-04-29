@@ -7,8 +7,8 @@
 
 #include "states/IdleState.h"
 #include "FlightController.h"
-#include "MPU6050.h"
 #include "MotorController.h"
+#include "../lib/IMUDriver/MPU6050.h"
 
 FlightController::FlightController() :
 		Context("FlightController") {
@@ -19,7 +19,7 @@ FlightController::~FlightController() {
 
 void FlightController::setup() {
 	MotorController::getMotorControllerInstance().initMotors();
-	MPU6050::getMPU6050Instance().setup();
+	IMUDriver::MPU6050::getMPU6050Instance().setup();
 
 	setCurrentState(new IdleState(this));
 }

@@ -11,8 +11,8 @@
 #include <states/AbstractState.h>
 #include <states/FlyingState.h>
 #include "Context.h"
-#include "HCSR04.h"
 #include "PID.h"
+#include "../../lib/RangefinderDriver/HCSR04.h"
 
 class TakeoffState: public AbstractState {
 public:

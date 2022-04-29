@@ -8,7 +8,7 @@
 #ifndef INCLUDE_MOTORCONTROLLER_H_
 #define INCLUDE_MOTORCONTROLLER_H_
 
-#include "Motor.h"
+#include "../lib/MotorDriver/Motor.h"
 
 class MotorController {
 public:
@@ -77,7 +77,7 @@ private:
 	 * 3: Links boven
 	 */
 	uint16_t throttle[4];
-	Motor *motors[4];
+	MotorDriver::Motor *motors[4];
 
 };
 

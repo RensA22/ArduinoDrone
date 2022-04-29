@@ -17,7 +17,7 @@ void MotorController::initMotors() {
 
 	for (int i = 0; i < nMotors; i++) {
 		throttle[i] = minValue;
-		motors[i] = new Motor(_motorpins[i], minValue, maxValue);
+		motors[i] = new MotorDriver::Motor(_motorpins[i], minValue, maxValue);
 	}
 	//Give esc some time to startup.
 	delay(5000);
