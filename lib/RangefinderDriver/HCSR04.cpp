@@ -50,10 +50,10 @@ namespace RangefinderDriver {
 		digitalWrite(trigPin, LOW);
 
 		// Reads the echoPin, returns the sound wave travel time in microseconds
-		duration = pulseIn(echoPin, HIGH);
+		duration = (float) pulseIn(echoPin, HIGH);
 
 		// Calculating the distance in cm
-		distance = duration * 0.034 / 2;
+		distance = (float) duration * 0.034 / 2.0;
 		distance -= distOffst;
 
 		return distance;
@@ -67,13 +67,13 @@ namespace RangefinderDriver {
 		}
 
 		float offDistance = 0;
-		const uint8_t nRuns = 25;
+		const uint16_t nRuns = 1250;
 
 		for (int i = 0; i < nRuns; i++) {
 			offDistance += measureDistance();
 		}
 
-		distOffst = offDistance / nRuns;
+		distOffst = offDistance / (float) nRuns;
 
 	}
 }
