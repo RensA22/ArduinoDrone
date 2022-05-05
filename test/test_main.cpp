@@ -25,8 +25,8 @@ namespace TEST_PID {
 
 		int i = 0;
 		int valueArray[10] = { 1, 5, 8, 12, 6, 3, 2, -5, -7, -15 };
-		float awnserArray[10] = { 14.0004, 57.5024, 49.5056, 68.0104, -65.9872, -32.986,
-				-9.4852, -94.9872, -35.49, -122.496 };
+		float awnserArray[10] = { 14.0004, 57.5024, 49.5056, 68.0104, -65.9872,
+				-32.986, -9.4852, -94.9872, -35.49, -122.496 };
 
 		while (i < 10) {
 			time = millis();
@@ -76,22 +76,29 @@ namespace TEST_STATEMACHINE {
 
 	}
 
+	void test_statemachine_start_motors() {
+		FlightController fc;
+
+		fc.setup();
+		fc.run();
+		SerialParser::getSerialParser().handleIncomingMessage('s');
+		SerialParser::getSerialParser().handleIncomingMessage('t');
+		SerialParser::getSerialParser().handleIncomingMessage('a');
+		SerialParser::getSerialParser().handleIncomingMessage('r');
+		SerialParser::getSerialParser().handleIncomingMessage('t');
+		SerialParser::getSerialParser().handleIncomingMessage('\n');
+		fc.run();
+
+		while (fc.getCurrentState()->getName() == "Start") {
+			fc.run();
+		}
+
+		TEST_ASSERT_TRUE(fc.getCurrentState()->getName().equals("Flying"));
+	}
+
 	void test_statemachine_stop(void) {
 		FlightController fc;
 
-	}
-}
-
-namespace TEST_LOGGER {
-	void test_log_info(void) {
-		Logger::getLoggerInstance().log("test", INFO);
-
-		while (true) {
-			if (Serial.available() > 0) {
-				Serial.print(": ");
-				Serial.println(Serial.read());
-			}
-		}
 	}
 }
 
@@ -104,7 +111,7 @@ void setup() {
 	RUN_TEST(TEST_PID::test_PID_compute);
 	RUN_TEST(TEST_PID::test_PID_reset);
 	RUN_TEST(TEST_STATEMACHINE::test_statemachine_start);
-//	RUN_TEST(TEST_LOGGER::test_log_info);
+	RUN_TEST(TEST_STATEMACHINE::test_statemachine_start_motors);
 
 	UNITY_END();
 
