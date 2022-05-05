@@ -7,8 +7,6 @@
 
 #include "../MotorDriver/Motor.h"
 
-#include "Logger.h"
-
 namespace MotorDriver {
 
 	Motor::Motor(const uint8_t _motorPin, const uint16_t _minValue,

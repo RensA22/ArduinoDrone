@@ -7,7 +7,6 @@
 
 #include <arduino.h>
 #include "PID.h"
-#include "Logger.h"
 
 PID::PID(const float _desiredValue, const float _Kp, const float _Ki,
 		const float _Kd, const int16_t _minValue, const int16_t _maxValue) :

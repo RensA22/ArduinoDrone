@@ -6,7 +6,6 @@
  */
 
 #include <MotorController.h>
-#include "Logger.h"
 
 MotorController::MotorController() :
 		nMotors(4), minValue(1000), maxValue(1650), throttleStartTarget(1425) {
