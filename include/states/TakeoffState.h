@@ -32,7 +32,7 @@ private:
 	FlyingState *parentState;
 
 	float altitude;
-	void reset();
+
 };
 
 #endif /* INCLUDE_STATES_TAKEOFFSTATE_H_ */

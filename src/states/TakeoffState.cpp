@@ -44,7 +44,7 @@ void TakeoffState::doActivity() {
 
 	if (altitude > 0.5) {
 		parentState->setIsFlying(true);
-	}else if(altitude > -1) {
+	} else if (altitude > -1) {
 		parentState->setIsFlying(false);
 		parentState->reset();
 	}
@@ -72,9 +72,6 @@ void TakeoffState::doActivity() {
 
 void TakeoffState::exitActivity() {
 //	delete parentState;
-}
-
-void TakeoffState::reset() {
 }
 
 float TakeoffState::getAltitude() const {
