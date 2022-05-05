@@ -10,7 +10,7 @@
 
 #include <Wire.h>
 
-#include "IIMUConsumerConsumer.h"
+#include "IIMUConsumer.h"
 
 namespace IMUDriver {
 
