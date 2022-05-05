@@ -23,14 +23,17 @@ public:
 	void entryActivity();
 	void doActivity();
 	void exitActivity();
-	void run();
-
 
 	/**
-	 * Resets the PID and the values roll and pitch
+	 *	This function runs the doactivity() of the currentState.
+	 *	Nothing more and nothing less.
+	 */
+	void run();
+
+	/**
+	 * Resets the PID and the values roll and pitch to 0
 	 */
 	void reset();
-
 
 	void setIsFlying(bool isFlying);
 	void setAltitudeThrottle(uint16_t altThrottle);

@@ -18,6 +18,10 @@ public:
 	Context(Context &&other) = delete;
 	Context& operator=(const Context &other) = delete;
 
+	/**
+	 *	This function runs the doactivity() of the currentState.
+	 *	Nothing more and nothing less.
+	 */
 	virtual void run() =0;
 
 	void setCurrentState(AbstractState *newState);
@@ -26,7 +30,6 @@ public:
 protected:
 	AbstractState *currentState;
 	String name;
-
 };
 
 #endif /* INCLUDE_CONTEXT_H_ */

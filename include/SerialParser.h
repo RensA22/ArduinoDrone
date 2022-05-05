@@ -30,8 +30,14 @@ public:
 	 */
 	void handleIncomingMessage(char incomingMessage);
 
-	String getMessage();
+	/**
+	 * Clears the array buffer
+	 * sets the bufferIndex to = 0
+	 * sets the bool messageReady to false
+	 */
 	void clearBuffer();
+
+	String getMessage();
 	bool isMessageReady() const;
 
 private:

@@ -17,7 +17,16 @@ public:
 	FlightController(const FlightController &other) = delete;
 	FlightController(FlightController &&other) = delete;
 
+	/**
+	 * This is the setup function where classes can be initialsed
+	 * and the begin state is set. In this instance this is idleState.
+	 */
 	void setup();
+
+	/**
+	 *	This function runs the doactivity() of the currentState.
+	 *	Nothing more and nothing less.
+	 */
 	void run();
 
 };
