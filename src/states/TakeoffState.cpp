@@ -24,7 +24,6 @@ TakeoffState::~TakeoffState() {
 }
 
 void TakeoffState::entryActivity() {
-	reset();
 	RangefinderDriver::HCSR04::getHCSR04Instance().setup(2, 16);
 	RangefinderDriver::HCSR04::getHCSR04Instance().calcOffset();
 
@@ -50,21 +49,6 @@ void TakeoffState::doActivity() {
 	}
 
 	float altPID = altitudePID->compute(altitude, true);
-
-//	Serial.print("Altitude:\t");
-//	Serial.print(altitude);
-//	Serial.print("\tAlt error:\t");
-//	Serial.print(altitudePID->getError());
-//	Serial.print("\tAlt Prop:\t");
-//	Serial.print(altitudePID->getProportional());
-//	Serial.print("\tAlt Integralk:\t");
-//	Serial.print(altitudePID->getIntegral());
-//	Serial.print("\tAlt Dervi:\t");
-//	Serial.print(altitudePID->getDerivative());
-//	Serial.print("\tAlt output:\t");
-//	Serial.print(altitudePID->getOutput());
-//	Serial.print("\tAltPID:\t");
-//	Serial.print(altPID);
 
 	parentState->setAltitudeThrottle((uint16_t) round(altPID));
 

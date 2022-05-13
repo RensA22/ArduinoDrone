@@ -1,4 +1,3 @@
-
 /*
  * main.cpp
  *
@@ -12,7 +11,6 @@
 #include "SerialParser.h"
 #include "MotorController.h"
 #include "Logger.h"
-#include "../lib/IMUDriver/MPU6050.h"
 
 FlightController fc;
 
@@ -27,11 +25,6 @@ void setup() {
 }
 
 void loop() {
-//	Serial.print("LoopTime:\t");
-//	Serial.print(millis() - prevTime);
-//	Serial.print("\t");
-//	prevTime = millis();
-
 // Emergency stop
 	if (digitalRead(safetyPin) == 0) {
 		MotorController::getMotorControllerInstance().stopMotors();

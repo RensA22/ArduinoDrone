@@ -19,7 +19,9 @@ public:
 	PID(PID &&other) = delete;
 
 	/**
-	 * Run the PID algorithm
+	 * Run the PID algorithm. The actualValue is the measured value from the sensor.
+	 * When the desired value is lower then the actual value the error needs to be swapped.
+	 * Otherwise you will get a wrong output.
 	 *
 	 * @param actualValue
 	 * @return Output of the PID

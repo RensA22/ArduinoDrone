@@ -63,33 +63,6 @@ void FlyingState::doActivity() {
 		pitch = pitchPID->compute(pitchMPU);
 	}
 
-// 	Roll en Pitch debug lines
-	Serial.print("\tRoll:\t");
-	Serial.print(rollMPU);
-	Serial.print("\tError:\t");
-	Serial.print(rollPID->getError());
-	Serial.print("\tProportional:\t");
-	Serial.print(rollPID->getProportional());
-	Serial.print("\tIntegral:\t");
-	Serial.print(rollPID->getIntegral());
-	Serial.print("\tDerivative:\t");
-	Serial.print(rollPID->getDerivative());
-	Serial.print("\t,PID roll:\t");
-	Serial.print(roll);
-
-	Serial.print("\tPitch:\t");
-	Serial.print(pitchMPU);
-	Serial.print("\tError:\t");
-	Serial.print(pitchPID->getError());
-	Serial.print("\tProportional:\t");
-	Serial.print(pitchPID->getProportional());
-	Serial.print("\tIntegral:\t");
-	Serial.print(pitchPID->getIntegral());
-	Serial.print("\tDerivative:\t");
-	Serial.print(pitchPID->getDerivative());
-	Serial.print("\t,PID pitch:\t");
-	Serial.println(pitch);
-
 	if (targetThrottle > baseThrottle) {
 		baseThrottle += 2;
 	} else if (targetThrottle == 1000) {
@@ -106,18 +79,6 @@ void FlyingState::doActivity() {
 				throttleMotors[i]);
 	}
 
-//	Motor debug lines
-//	Serial.print("BaseThrottle:\t");
-//	Serial.print(baseThrottle);
-//	Serial.print("\tMotor0:\t");
-//	Serial.print(throttleMotors[0]);
-//	Serial.print("\tMotor1:\t");
-//	Serial.print(throttleMotors[1]);
-//	Serial.print("\tmotor2:\t");
-//	Serial.print(throttleMotors[2]);
-//	Serial.print("\tMotor3:\t");
-//	Serial.println(throttleMotors[3]);
-
 }
 
 void FlyingState::exitActivity() {
@@ -133,7 +94,6 @@ void FlyingState::run() {
 }
 
 void FlyingState::reset() {
-	Serial.print("*****");
 	rollPID->reset();
 	pitchPID->reset();
 	roll = 0;
